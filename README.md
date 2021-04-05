@@ -1,4 +1,4 @@
-# Jeux C SDL
+# Jeu C SDL
 
 configuration 64 bits
 
