@@ -3,27 +3,27 @@
 
 
 # Windows
-# gcc src/*.c -o bin/prog -I include -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+# gcc src/*.c -o bin/prog -I include -Wall -Wextra -Werror -std=c11 -pedantic-errors -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+# bin\prog.exe ou ./bin/prog.exe (PS)
 
 CC = gcc
-EXE = bin/prog.exe
+EXEC = bin/prog.exe
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC: .c=.o)
-CFLAGS = -I include -std=c99 -Wall -Wextra -pedantic
+CFLAGS = -I include -Wall -Wextra -Werror -std=c11 -pedantic-errors
 LDFLAGS = -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
-DEBUGFLAG = -g
 
-all : $(EXE)
-.PHONY: clean
+all: $(EXEC)
 
 %.o : %.c
-	$(CC) -o $(OBJ) -c $(SRC) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $(OBJ) -c $(SRC)
 
-$(EXE) : $(OBJ)
-	$(CC) -o $(EXE) $(OBJ) $(CFLAGS)
+$(EXEC) : $(OBJ)
+	$(CC) $(CFLAGS) -o $(EXEC) $(OBJ) 
+#$(LDFLAGS)
 
-clean:
-	-del test.txt
+#clean:
+#	del /q /f test.txt
 
 
 
