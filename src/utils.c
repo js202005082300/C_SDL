@@ -3,7 +3,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void hello()
+void arg(int c, char **v)
 {
-	printf("Hello world");
+	printf("Premier argument : %s\n", v[0]);
+	printf("Nombre d'arguments : %d\n", c);
+}
+
+void versionSDL(void)
+{
+    SDL_version nb;
+    SDL_VERSION(&nb);
+    printf("Bienvenue sur la SDL %d.%d.%d !\n", nb.major, nb.minor, nb.patch);
 }

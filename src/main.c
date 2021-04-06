@@ -1,11 +1,10 @@
-// Samuel Jacquet
-// 25-12-20
-
 #include <stdio.h>
+#include <stdlib.h>
 #include "utils.h"
 
-int main()
+int main(int argc, char **argv)
 {
-	hello();
+	versionSDL();
+	arg(argc, argv);
 	return 0;
 }
