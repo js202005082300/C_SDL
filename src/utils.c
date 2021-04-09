@@ -1,12 +1,11 @@
 #include <SDL.h>
-#include <SDL_image.h>
+//#include <SDL_image.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 void arg(int c, char **v)
 {
-	printf("Premier argument : %s\n", v[0]);
-	printf("Nombre d'arguments : %d\n", c);
+	printf("%d argument(s) | Premier argument : %s\n", c, v[0]);
 }
 
 void versionSDL(void)
