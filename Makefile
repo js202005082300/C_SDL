@@ -4,7 +4,7 @@ CC = gcc
 EXEC = bin/prog.exe
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC: .c=.o)
-CFLAGS = -I include -Wall -Wextra -Werror -std=c11 -pedantic-errors
+CFLAGS = -I include -Wall -Werror -std=c11 -pedantic-errors #-Wextra
 LIBS = -L lib
 LDFLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
 

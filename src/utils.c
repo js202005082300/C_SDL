@@ -1,16 +1,24 @@
 #include <SDL.h>
-//#include <SDL_image.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-void arg(int c, char **v)
+void SDL_CleanRessources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t)
 {
-	printf("%d argument(s) | Premier argument : %s\n", c, v[0]);
+    if(t != NULL)
+        SDL_DestroyTexture(t);
+
+    if(r != NULL)
+        SDL_DestroyRenderer(r);
+
+    if(w != NULL)
+        SDL_DestroyWindow(w);
+    
+    SDL_Quit();
 }
 
-void versionSDL(void)
+void SDL_ExitWithError(const char *message)
 {
-    SDL_version nb;
-    SDL_VERSION(&nb);
-    printf("Bienvenue sur la SDL %d.%d.%d !\n", nb.major, nb.minor, nb.patch);
+    SDL_Log("ERREUR : %s > %s\n", message, SDL_GetError());
+    SDL_Quit();
+    exit(EXIT_FAILURE);
 }

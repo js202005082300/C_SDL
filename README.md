@@ -1,6 +1,6 @@
 # Jeu C SDL
 
-configuration 64 bits
+*configuration 64 bits*
 
 ||version|architecture
 -|:-:|:-:
