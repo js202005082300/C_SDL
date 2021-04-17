@@ -7,7 +7,6 @@
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
-//#define FPS_LIMIT 16
 
 int main(int argc, char *argv[])
 {
