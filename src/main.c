@@ -7,6 +7,7 @@
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
+//#define FPS_LIMIT 16
 
 int main(int argc, char *argv[])
 {
@@ -73,10 +74,16 @@ int main(int argc, char *argv[])
         while(SDL_PollEvent(&event))
         {
             switch(event.type)
-            {
+            {               
                 case SDL_KEYDOWN:
                     switch(event.key.keysym.sym)
                     {
+                        case SDLK_LEFT:
+                        case SDLK_RIGHT:
+                        case SDLK_UP:
+                        case SDLK_DOWN:
+                            printf("Gauche-Droite-Haut-Bas\n");
+                            continue;
                         case SDLK_b:
                             printf("Vous avez appuye sur B\n");
                             continue;
