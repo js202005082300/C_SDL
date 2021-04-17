@@ -1,7 +1,6 @@
 #include <SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "utils.h"
 
 void SDL_CleanRessources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t)
 {
