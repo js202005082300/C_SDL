@@ -1,8 +1,5 @@
-#include <SDL.h>
-#include <SDL_image.h>
-#include <stdio.h>
-
 #include "utils.h"
+#include "player.h"
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
@@ -14,6 +11,20 @@ int main(int argc, char *argv[])
     SDL_Surface *background = NULL;
     SDL_Texture *texture = NULL;
     SDL_Rect dstrect = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
+
+    /*---------------------------*/
+
+    SDL_V();
+    Player *p = NULL;
+
+    p = new_player("Buble Buble");
+    print_player(p);
+    p->level += 5;
+    print_player(p);
+    kill_player(p);
+    print_player(p);
+
+    /*---------------------------*/
 
     //Lancement SDL
     if(SDL_Init(SDL_INIT_VIDEO)!=0)

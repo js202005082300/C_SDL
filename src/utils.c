@@ -1,5 +1,11 @@
-#include <SDL.h>
-#include <stdio.h>
+#include "utils.h"
+
+void SDL_V(void)
+{
+    SDL_version nb;
+    SDL_VERSION(&nb);
+    printf("Bienvenue sur la SDL %d.%d.%d !\n",nb.major, nb.minor, nb.patch);
+}
 
 void SDL_CleanRessources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t)
 {
