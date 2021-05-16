@@ -13,11 +13,17 @@ typedef enum
 	true //1
 }Bool;
 
+typedef struct Position {
+    unsigned int X;
+    unsigned int Y;
+}Position;
+
 /* Définition d'un Joueur */
 typedef struct Player
 {
 	char *name;
-	int level;
+	unsigned int score;
+	Position *position;
 }Player;
 
 /* Définition d'une Pile */
@@ -28,9 +34,8 @@ typedef struct StackPlayer
 }StackPlayer;
 
 /* Prototypes des fonctions */
-Player *new_player(char *name);
+Player *new_player(const char *name);
 void print_player(Player *p);
-void kill_player(Player *p);
-
+void free_player(Player *p);
 
 #endif

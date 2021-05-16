@@ -1,13 +1,10 @@
 #include "utils.h"
 #include "player.h"
-
-#define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 480
+#include "save.h"
 
 int main(int argc, char *argv[])
 {
-    SDL_Window *window = NULL;
-    SDL_Renderer *renderer = NULL;
+
     SDL_Surface *background = NULL;
     SDL_Texture *texture = NULL;
     SDL_Rect dstrect = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
@@ -19,60 +16,54 @@ int main(int argc, char *argv[])
 
     p = new_player("Buble Buble");
     print_player(p);
-    p->level += 5;
+
+    p->score += 5;
+    p->position->X += 3;
+    p->position->Y += 6;
     print_player(p);
-    kill_player(p);
+    free_player(p);
     print_player(p);
+    save_game(p);
 
     /*---------------------------*/
 
-    //Lancement SDL
-    if(SDL_Init(SDL_INIT_VIDEO)!=0)
-        SDL_ExitWithError("Initialisation SDL echouee");
-    //Création fenêtre
-    window = SDL_CreateWindow("Jeu C/SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
-    if(window == NULL)
-        SDL_ExitWithError("Creation fenetre echouee");
-    //Création rendu
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-    if(renderer == NULL)
-    {
-        SDL_CleanRessources(window, NULL, NULL);
-        SDL_ExitWithError("Creation rendu echouee");
-    }
+    App *app = SDL_initGame();
+
+    /*---------------------------*/
+
     //Chargement background
     background = IMG_Load("src/background.png");
     if(background == NULL)
     {
-        SDL_CleanRessources(window, renderer, NULL);
+        SDL_CleanRessources(app->window, app->renderer, NULL);
         SDL_ExitWithError("Chargement background echouee");
     }
     //Création texture
-    texture = SDL_CreateTextureFromSurface(renderer, background);
+    texture = SDL_CreateTextureFromSurface(app->renderer, background);
     SDL_FreeSurface(background);
     if(texture == NULL)
     {
-        SDL_CleanRessources(window, renderer, NULL);
+        SDL_CleanRessources(app->window, app->renderer, NULL);
         SDL_ExitWithError("Creation texture echouee");
     }
     //Chargement texture
     if(SDL_QueryTexture(texture, NULL, NULL, &dstrect.w, &dstrect.h) != 0)
     {
-        SDL_CleanRessources(window, renderer, texture);
+        SDL_CleanRessources(app->window, app->renderer, texture);
         SDL_ExitWithError("Impossible de charger la texture");
     }
 
     // dstrect.x = (WINDOW_WIDTH - dstrect.w) / 2;
     // dstrect.y = (WINDOW_HEIGHT - dstrect.h) / 2;
     //Afficher texture
-    if(SDL_RenderCopy(renderer, texture, NULL, &dstrect) != 0)
+    if(SDL_RenderCopy(app->renderer, texture, NULL, &dstrect) != 0)
     {
-        SDL_CleanRessources(window, renderer, texture);
+        SDL_CleanRessources(app->window, app->renderer, texture);
         SDL_ExitWithError("Impossible d'afficher la texture");
     }
 
-    SDL_RenderPresent(renderer);
-    // SDL_Delay(3000);
+    SDL_RenderPresent(app->renderer);
+
     /*----------------------------------------------*/
     SDL_bool program_launched = SDL_TRUE;
 
@@ -122,6 +113,6 @@ int main(int argc, char *argv[])
         }
     }
     /*----------------------------------------------*/
-    SDL_CleanRessources(window, renderer, texture);
+    SDL_CleanRessources(app->window, app->renderer, texture);
     return EXIT_SUCCESS;
 }

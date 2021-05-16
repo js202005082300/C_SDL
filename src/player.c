@@ -1,25 +1,32 @@
 #include "player.h"
 
-Player *new_player(char *name)
+Player *new_player(const char *name)
 {
     Player *p = malloc(sizeof(*p));
     p->name = malloc(sizeof(p->name));
-    if(p == NULL || p->name == NULL)
+    p->position = malloc(sizeof(p->position));
+
+    if(p == NULL || p->name == NULL || p->position == NULL)
         exit(EXIT_FAILURE);
-    p->level = 0;
+
+    p->score = 0;
     strcpy(p->name, name);
+    p->position->X = 0;
+    p->position->Y = 0;
+    
     return p;
 }
 
 void print_player(Player *p)
 {
-    printf("Le joueur %s est au niveau %d.\n", p->name, p->level);
-    return;
+    if(p == NULL)
+        return;
+    
+    printf("Le joueur %s | score %d | position (%d,%d)\n", p->name, p->score, p->position->X, p->position->Y);
 }
 
-void kill_player(Player *p)
+void free_player(Player *p)
 {
-    free(p);
-    free(p->name);
-    return;
+    if(p != NULL)
+        free(p);
 }
