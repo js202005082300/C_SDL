@@ -1,9 +1,12 @@
-#ifndef __UTILS__H__
-#define __UTILS__H__
+#ifndef __GAME__H__
+#define __GAME__H__
 
 #include <stdio.h>
 #include <SDL.h>
 #include <SDL_image.h>
+
+#include "player.h"
+#include "save.h"
 
 #define SQUARE_SIZE 10
 /*--------------------------------------------------------*/
@@ -23,10 +26,16 @@ typedef struct App
 }App;
 
 //	Prototypes des fonctions
-void SDL_V(void);
-void SDL_ExitWithError(const char *message);
+void SDL_versionUsed(void);
+void SDL_gameManager(void);
 App *SDL_initGame(void);
-void SDL_CleanRessources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t);
+SDL_Texture *SDL_loadTexture(char *filename, App *app);
+SDL_Texture *SDL_prepareScene(char *filename, App *app);
+void SDL_renderTexture(SDL_Texture *texture, App *app, int x, int y, int w, int h);
+void SDL_renderScene(App *app);
+void SDL_doInput(SDL_bool *program_launched);
+void SDL_ExitWithError(const char *message);
 void SDL_freeGame(App *app);
+void SDL_CleanRessources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t);
 /*--------------------------------------------------------*/
 #endif
