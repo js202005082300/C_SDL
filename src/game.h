@@ -6,6 +6,8 @@
 #include <SDL_image.h>
 
 #include "player.h"
+#include "game.h"
+#include "map.h"
 #include "save.h"
 
 #define SQUARE_SIZE 10
@@ -30,10 +32,8 @@ void SDL_versionUsed(void);
 void SDL_gameManager(void);
 App *SDL_initGame(void);
 SDL_Texture *SDL_loadTexture(char *filename, App *app);
-SDL_Texture *SDL_prepareScene(char *filename, App *app);
 void SDL_renderTexture(SDL_Texture *texture, App *app, int x, int y, int w, int h);
-void SDL_renderScene(App *app);
-void SDL_doInput(SDL_bool *program_launched);
+void SDL_doInput(SDL_bool *program_launched, unsigned int *x, unsigned int *y);
 void SDL_ExitWithError(const char *message);
 void SDL_freeGame(App *app);
 void SDL_CleanRessources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t);

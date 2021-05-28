@@ -1,8 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\src"
+    "\\bin",
+    "\\src",
+    "\\src\\matrix"
   ],
-  "SelectedNode": "\\src\\player.h",
+  "SelectedNode": "\\src\\matrix\\niveau1.lvl",
   "PreviewInSolutionExplorer": false
 }

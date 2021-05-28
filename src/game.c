@@ -9,7 +9,8 @@ void SDL_versionUsed(void)
 
 void SDL_gameManager(void)
 {
-    /* Test */
+    map_init("src/matrix/niveau1.lvl", "src/matrix/data1.bin");
+    //test("src/matrix/data1.bin");
     Player *joueur = NULL;
     joueur = new_player("Buble Buble");
     print_player(joueur);
@@ -21,27 +22,30 @@ void SDL_gameManager(void)
     save_game(joueur);
     free_player(joueur);
 
-    /* Initialisation */
+    // Initialisation
     App *app = SDL_initGame();
 
-    /* Texture */
-    SDL_Texture *texture[2];
-    texture[0] = SDL_prepareScene("src/background.png", app);
-    texture[1] = SDL_loadTexture("src/sprite-100.png", app);
-    SDL_renderTexture(texture[1], app, joueur->position->X, joueur->position->Y, SQUARE_SIZE, SQUARE_SIZE);   
-    SDL_renderScene(app);
+    // Texture
+    SDL_Texture *texture_background = SDL_loadTexture("src/background.png", app);
+    SDL_Texture *texture_player = SDL_loadTexture("src/sprite-100.png", app);
 
-    /* Evenement */
+    // Evenement
     SDL_bool program_launched = SDL_TRUE;
     SDL_bool *ptr = &program_launched;
+    unsigned int *X = &joueur->position->X;
+    unsigned int *Y = &joueur->position->Y;
     while(*ptr)
     {
-        SDL_doInput(ptr);
+        SDL_doInput(ptr, X, Y);
+
+        SDL_renderTexture(texture_background, app, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+        SDL_renderTexture(texture_player, app, joueur->position->X, joueur->position->Y, SQUARE_SIZE, SQUARE_SIZE);   
+        SDL_RenderPresent(app->renderer);
     }
 
-    /* Clean up */
-    SDL_CleanRessources(app->window, app->renderer, texture[0]);
-    SDL_CleanRessources(app->window, app->renderer, texture[1]);
+    // Clean up
+    SDL_CleanRessources(app->window, app->renderer, texture_background);
+    SDL_CleanRessources(app->window, app->renderer, texture_player);
 }
 
 App *SDL_initGame(void)
@@ -117,20 +121,7 @@ void SDL_renderTexture(SDL_Texture *texture, App *app, int x, int y, int w, int 
     return;
 }
 
-SDL_Texture *SDL_prepareScene(char *filename, App *app)
-{
-    SDL_Texture *texture_background = SDL_loadTexture(filename, app);
-    SDL_renderTexture(texture_background, app, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-    return texture_background;
-}
-
-void SDL_renderScene(App *app)
-{
-    SDL_RenderPresent(app->renderer);
-    return;
-}
-
-void SDL_doInput(SDL_bool *program_launched)
+void SDL_doInput(SDL_bool *program_launched, unsigned int *x, unsigned int *y)
 {
     SDL_Event event;
     
@@ -142,13 +133,22 @@ void SDL_doInput(SDL_bool *program_launched)
                 switch(event.key.keysym.sym)
                 {
                     case SDLK_LEFT:
+                        *x -= 10;
+                        printf("(%d,%d)\n", *x, *y);
+                        continue;
                     case SDLK_RIGHT:
+                        *x += 10;
+                        printf("(%d,%d)\n", *x, *y);
+                        continue;
                     case SDLK_UP:
+                        *y -=10;
+                        printf("(%d,%d)\n", *x, *y);
+                        continue;
                     case SDLK_DOWN:
-                        printf("Gauche-Droite-Haut-Bas\n");
+                        *y +=10;
+                        printf("(%d,%d)\n", *x, *y);
                         continue;
                     case SDLK_b:
-                        printf("Vous avez appuye sur B\n");
                         continue;
                     
                     default:
