@@ -10,13 +10,14 @@
 // Définition d'une carte
 typedef struct Map
 {
-	int **matrix;
+	char **matrix;
 	int rows, columns, nb_block;
 	int xscroll, yscroll;
 }Map;
 
 // Prototypes des fonctions
 void map_init(const char *fileLvl, const char *fileBin);
+void GetStruct(const char *filename);
 //void map_texture_loading(void);
 void printMapToTheConsole(Map *m);
 //map_filling();
