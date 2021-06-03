@@ -11,7 +11,6 @@ void SDL_gameManager(void)
 {
     map_init("src/matrix/niveau1.lvl", "src/matrix/data1.bin");
     GetStruct("src/matrix/data1.bin");
-    //return;
     Player *joueur = NULL;
     joueur = new_player("Buble Buble");
     print_player(joueur);
@@ -62,12 +61,12 @@ App *SDL_initGame(void)
     if(SDL_Init(SDL_INIT_VIDEO)!=0)
         SDL_ExitWithError("Initialisation SDL echouee");
 
-    //Cr�ation fen�tre
+    //Creation fenetre
     app->window = SDL_CreateWindow("Jeu C/SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
     if(app->window == NULL)
         SDL_ExitWithError("Creation fenetre echouee");
 
-    //Cr�ation rendu
+    //Creation rendu
     app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_SOFTWARE);
     if(app->renderer == NULL)
     {
@@ -89,7 +88,7 @@ SDL_Texture *SDL_loadTexture(char *filename, App *app)
         SDL_CleanRessources(app->window, app->renderer, NULL);
         SDL_ExitWithError("Chargement image echouee");
     }
-    //Cr�ation texture
+    //Creation texture
     texture = SDL_CreateTextureFromSurface(app->renderer, surface);
     SDL_FreeSurface(surface);
     if(texture == NULL)

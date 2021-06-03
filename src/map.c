@@ -1,5 +1,7 @@
 #include "map.h"
 
+
+
 void map_init(const char *fileLvl, const char *fileBin)
 {
 	//initialisation map	
@@ -19,18 +21,21 @@ void map_init(const char *fileLvl, const char *fileBin)
 		exit(EXIT_FAILURE);
 	}
 
-	int lettre = 0, rows = 1, columns=0, nb_block = 0;
-    while((lettre = fgetc(lvl)) != EOF)
+	int lettre = 0, rows = 0, columns=0, nb_block = 0;
+
+    while(1)
     {
-		if(lettre == '\n')
-		{ 
-			++rows;
-			columns = 0;
+		lettre = fgetc(lvl);
+
+		if(lettre != EOF)
+		{
+			if(lettre == '\n') { rows++; columns = 0; }
+			else { columns++; nb_block++; }
 		}
 		else
-		{
-			++columns;
-			++nb_block;
+		{ 
+			rows += 1; 
+			break;
 		}
     }
 	printf("\n");
@@ -63,12 +68,6 @@ void map_init(const char *fileLvl, const char *fileBin)
 		for(int j=0 ; j < (columns+1) ; j++)
 			if((tmp =fgetc(lvl)) != '\n')
 				matrix[i][j] = tmp;
-
-	//affichage
-	for(int i=0 ; i < rows ; i++)
-		for(int j=0 ; j < columns ; j++)
-			//printf("Valeur tab[%d][%d] = %c\n", i+1, j+1, matrix[i][j]);
-			break;
 
 	printf("r : %d | c : %d | nb bl : %d\n",rows, columns, nb_block);
 	fclose(lvl);
@@ -170,25 +169,6 @@ void GetStruct(const char *filename)
 	fclose(fic);
 	free(Buf);
 	return;
-}
-
-//il me faut un pointeur pour récupérer le tableau.
-void OUPS(const char *filename)
-{
-	FILE *fic = NULL;
-	Map mBuf;
-	if((fic = fopen(filename, "rb")) == NULL){
-		fprintf(stderr,"Error : No such file or directory : %s\n",filename);
-		exit(EXIT_FAILURE);
-	}
-	fread(&mBuf, sizeof(mBuf), 1, fic); // Pas ok
-	printf("Recuperation : %d | %d | %d | %d | %d\n",mBuf.rows,mBuf.columns,mBuf.nb_block,mBuf.xscroll,mBuf.yscroll);
-	for(int i=0 ; i < mBuf.rows ; i++)
-		for(int j=0 ; j < mBuf.columns ; j++)
-			printf("Valeur tab[%d][%d] = %c\n", i+1, j+1, mBuf.matrix[i][j]);
-	fclose(fic);
-	return;
-
 }
 
 void printMapToTheConsole(Map *m)
