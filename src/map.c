@@ -1,179 +1,188 @@
 #include "map.h"
 
-
-
-void map_init(const char *fileLvl, const char *fileBin)
+void MapManager(void)
 {
-	//initialisation map	
+	Map *mapLevel01 = new_map(MAP01);
+	printMapToTheConsole(mapLevel01);
+	test_ecriture(mapLevel01->MapSize, BIN);
+	MapSize *test = test_lecture(BIN);
+	PrintSize(test);
+	free_map(mapLevel01);
+	return;
+}
+
+// ----------------------------------------------------
+//  Memory allocation and affectation.
+// ----------------------------------------------------
+
+Map *new_map(const char *fileLevel)
+{
 	Map *m = NULL;
+	FILE *fic = NULL;
 
-	if((m = malloc(sizeof(Map*))) == NULL){
-		fprintf(stderr, "Error : dynamic allocation problem.\n");
-		exit(EXIT_FAILURE);
-	}
+	if((fic = fopen(fileLevel, "r")) == NULL)
+		{ fprintf(stderr,"Error : No such file or directory : %s\n",fileLevel); exit(EXIT_FAILURE); }
 
-	/*----------------------------------------------------*/
+	m = InitMap();
+	m->MapSize = GetSizeMatrix(fic);
+	m->matrix = GetMatrix(fic, m->MapSize->rows, m->MapSize->columns);
+	m->MapPos = InitMapPos();
 
-	//Lecture fichier matrix	
-	FILE *lvl = NULL;
-	if((lvl = fopen(fileLvl, "r")) == NULL){
-		fprintf(stderr,"Error : No such file or directory : %s\n",fileLvl);
-		exit(EXIT_FAILURE);
-	}
+	fclose(fic);
+	return m;
+}
 
-	int lettre = 0, rows = 0, columns=0, nb_block = 0;
+Map *InitMap(void)
+{
+	Map *map = NULL;
+
+	map = malloc(sizeof(Map*));
+	if(map == NULL)
+		{ fprintf(stderr, "Error : dynamic allocation problem.\n"); exit(EXIT_FAILURE); }
+
+	return map;
+}
+
+MapSize *GetSizeMatrix(FILE *fic)
+{
+	MapSize *mapS = NULL;
+
+	mapS = malloc(sizeof(MapSize*));
+	if(mapS == NULL)
+		{ fprintf(stderr, "Error : dynamic allocation problem.\n"); fclose(fic); exit(EXIT_FAILURE); }
+
+	int lettre = 0; mapS->rows = 0, mapS->columns = 0, mapS->nb_block = 0;
 
     while(1)
     {
-		lettre = fgetc(lvl);
-
+		lettre = fgetc(fic);
 		if(lettre != EOF)
 		{
-			if(lettre == '\n') { rows++; columns = 0; }
-			else { columns++; nb_block++; }
+			if(lettre == '\n'){ mapS->rows++; mapS->columns = 0; }
+			else{ mapS->columns++; mapS->nb_block++; }
 		}
-		else
-		{ 
-			rows += 1; 
-			break;
-		}
+		else { mapS->rows += 1; break; }
     }
-	printf("\n");
+	return mapS;
+}
 
-	/*----------------------------------------------------*/
-	//La Matrice
-
-	rewind(lvl);
-
-	char **matrix = NULL;
-	matrix=malloc(rows * sizeof(char*));
-	if(matrix == NULL){ 
-		fprintf(stderr, "Error : dynamic allocation problem.\n");
-		//fclose(fic);
-		exit(EXIT_FAILURE);
-	}
+int **GetMatrix(FILE *fic, int rows, int columns)
+{
+	int **matrix = NULL;
+	matrix=malloc(rows * sizeof(int*));
+	if(matrix == NULL)
+		{ fprintf(stderr, "Error : dynamic allocation problem.\n"); fclose(fic); exit(EXIT_FAILURE); }
 
 	for(int i=0; i < rows; i++)
 	{
 		matrix[i]=malloc((columns+1)*sizeof(int));
-		if(matrix[i] == NULL){
-			fprintf(stderr, "Error : dynamic allocation problem.\n");
-			//fclose(fic);
-			exit(EXIT_FAILURE);
-		}
+		if(matrix[i] == NULL)
+			{ fprintf(stderr, "Error : dynamic allocation problem.\n"); fclose(fic); exit(EXIT_FAILURE); }
 	}
+
+	rewind(fic);
+
 	//remplissage
 	int tmp = 0;
 	for(int i=0 ; i < rows ; i++)
 		for(int j=0 ; j < (columns+1) ; j++)
-			if((tmp =fgetc(lvl)) != '\n')
+			if((tmp = fgetc(fic)) != '\n')
 				matrix[i][j] = tmp;
 
-	printf("r : %d | c : %d | nb bl : %d\n",rows, columns, nb_block);
-	fclose(lvl);
-
-	/*----------------------------------------------------*/
-
-	//creation binaire
-	FILE *bin = NULL;
-	if((bin = fopen(fileBin, "wba")) == NULL){
-		fprintf(stderr,"Error : No such file or directory : %s\n",fileBin);
-		exit(EXIT_FAILURE);
-	}
-
-	//m->rows = rows;
-	//m->columns = columns;
-	//m->nb_block = nb_block;
-	//m->xscroll = 0;
-	//m->yscroll = 0;
-	//m->matrix = matrix;
-	//fwrite(m, sizeof(Map), sizeof(m), bin); // OK
-
-	Map ma;
-	ma.rows = rows;
-	ma.columns = columns;
-	ma.nb_block = nb_block;
-	ma.xscroll = 0;
-	ma.yscroll = 0;
-	ma.matrix = matrix;
-
-	//affichage
-	for(int i=0 ; i < rows ; i++)
-		for(int j=0 ; j < columns ; j++)
-			printf("Valeur tab[%d][%d] = %c\n", i+1, j+1, ma.matrix[i][j]);
-
-	fwrite(&ma, sizeof(ma), 1, bin); //ok cours
-	//fwrite(&ma.rows, sizeof(ma.rows), 1, bin);
-	//fwrite(&ma.columns, sizeof(ma.columns), 1, bin);
-	//fwrite(&ma.nb_block, sizeof(ma.nb_block), 1, bin);
-	//fwrite(&ma.xscroll, sizeof(ma.xscroll), 1, bin);
-	//fwrite(&ma.yscroll, sizeof(ma.yscroll), 1, bin);
-
-	fclose(bin);
-
-	/*----------------------------------------------------*/
-
-	//free
-	for(int i = 0 ; i < rows ; i++)
-	{
-		free(matrix[i]);
-	}
-	free(matrix);
-
-	return;
+	return matrix;
 }
 
-void GetStruct(const char *filename)
+MapPos *InitMapPos(void)
 {
-	FILE *fic = NULL;
-	long ficSize = 0;
-	size_t result;
-	Map *Buf = NULL;
-	if((fic = fopen(filename, "rb")) == NULL){
-		fprintf(stderr,"Error : No such file or directory : %s\n",filename);
-		exit(EXIT_FAILURE);
-	}
+	MapPos *mapP = NULL;
 
-	fseek(fic , 0 , SEEK_END);
-	ficSize = ftell(fic);
-	rewind(fic);
+	mapP = malloc(sizeof(MapPos*));
+	if(mapP == NULL)
+		{ fprintf(stderr, "Error : dynamic allocation problem.\n"); exit(EXIT_FAILURE); }
 
-	//alloc
-	Buf = (Map*) malloc(sizeof(Map)*ficSize);
-	if(Buf == NULL) {fputs("Memory error",stderr); exit (2);}
-	//Buf->matrix = (int**) malloc(sizeof(int*)*1000);
+	mapP->xscroll = 0;
+	mapP->yscroll = 0;
+	return mapP;
+}
 
-	result = fread(Buf,1,ficSize,fic);
-	if(result != ficSize) {fputs("Reading error",stderr); exit (3);}
-	printf("%d - %d - %d - %d - %d\n", Buf->rows, Buf->columns,Buf->nb_block,Buf->xscroll, Buf->yscroll);
-	//printf("1e valeur : %d\n", Buf->matrix[5][4]); //--> problem
-	//printf("Tab en octets : %lld\n", sizeof(Buf->matrix[0][0]));
-	//affichage
-	for(int i=0 ; i < Buf->rows ; i++)
-		for(int j=0 ; j < Buf->columns ; j++)
-			//printf("Valeur tab[%d][%d] = %c\n", i+1, j+1, Buf->matrix[i][j]); --> problem
+// ----------------------------------------------------
+//  File bin manager.
+// ----------------------------------------------------
 
-	//fseek(fic, 0, SEEK_SET);
-	//Map b;
-	//fread(&b, sizeof(b), 1, fic);
-	//printf("%d - %d - %d - %d - %d\n", b.rows, b.columns,b.nb_block,b.xscroll, b.yscroll);
-	//printf("1e valeur : %d\n", b.matrix[5][4]); //--> problem 
-
-	/*----------------------PROBLEME Allocation------------------------------*/
-	//printf("Recuperation : %d | %d | %d | %d | %d\n",Buf->rows,Buf->columns,Buf->nb_block,Buf->xscroll,Buf->yscroll);
-	//for(int i=0 ; i < Buf->rows ; i++)
-		//for(int j=0 ; j < Buf->columns ; j++)
-			//printf("Valeur tab[%d][%d] = %c\n", i+1, j+1, Buf->matrix[i][j]);
-	/*----------------------------------------------------*/
-
+void test_ecriture(MapSize *mSize, const char *filename)
+{
+   	FILE *fic = NULL;
+    fic = fopen(filename, "wba");
+	if(fic == NULL)
+        { fprintf(stderr,"Error : No such file or directory : %s\n",filename); exit(EXIT_FAILURE); }
+    fwrite(&mSize, sizeof(mSize), 1, fic); //ok cours
+    
 	fclose(fic);
-	free(Buf);
 	return;
 }
+
+MapSize *test_lecture(const char *filename)
+{
+	MapSize *mSize = NULL;
+	FILE *fic = NULL;
+
+	mSize = malloc(sizeof(MapSize*));
+	if(mSize == NULL)
+		{ fprintf(stderr, "Error : dynamic allocation problem.\n"); exit(EXIT_FAILURE); }
+
+    fic = fopen(filename, "rb");
+	if(fic == NULL)
+        { fprintf(stderr,"Error : No such file or directory : %s\n",filename); exit(EXIT_FAILURE); }
+
+	fread(&mSize, sizeof(mSize), 1, fic);
+
+    fclose(fic);
+    return mSize;
+}
+
+// ----------------------------------------------------
+//  Display map.
+// ----------------------------------------------------
 
 void printMapToTheConsole(Map *m)
 {
-	for(int i=0 ; i < m->rows ; i++)
-		for(int j=0 ; j < m->columns ; j++)
-			printf("Valeur tab[%d][%d] = %d\n", i, j, m->matrix[i][j]);
+	printf("=========== Map ============\n");
+	printf("Lignes : %d\nColonnes : %d\nNombre de blocs : %d\nXscroll : %d\nYscroll : %d\n", m->MapSize->rows, m->MapSize->columns, m->MapSize->nb_block, m->MapPos->xscroll, m->MapPos->yscroll);
+
+	for(int i=0 ; i < m->MapSize->rows ; i++){
+		printf("\n");
+		for(int j=0 ; j < m->MapSize->columns ; j++)
+			printf("%c", m->matrix[i][j]);
+	}
+	printf("\n");
+	printf("============================\n");
 }
+
+void PrintSize(MapSize *mSize)
+{
+	printf("PrintSize : %d | %d | %d\n", mSize->rows, mSize->columns, mSize->nb_block);
+	return;
+}
+
+// ----------------------------------------------------
+//  Free map.
+// ----------------------------------------------------
+
+void free_map(Map *map)
+{
+	for(int i = 0 ; i < map->MapSize->rows ; i++)
+	{
+		free(map->matrix[i]);
+	}
+	free(map->matrix);
+
+	free(map->MapPos);
+
+	free(map->MapSize);
+
+	free(map);
+
+	return;
+}
+
+/*==========================================================*/

@@ -2,12 +2,12 @@
 
 Player *new_player(const char *name)
 {
-    Player *p = malloc(sizeof(*p));
-    p->name = malloc(sizeof(p->name));
-    p->position = malloc(sizeof(p->position));
+    Player *p = malloc(sizeof(Player*));
+    p->name = malloc(sizeof(char*));
+    p->position = malloc(sizeof(Position*));
 
     if(p == NULL || p->name == NULL || p->position == NULL)
-        exit(EXIT_FAILURE);
+        { fprintf(stderr, "Error : dynamic allocation problem.\n"); exit(EXIT_FAILURE); }
 
     p->score = 0;
     strcpy(p->name, name);

@@ -9,8 +9,9 @@ void SDL_versionUsed(void)
 
 void SDL_gameManager(void)
 {
-    map_init("src/matrix/niveau1.lvl", "src/matrix/data1.bin");
-    GetStruct("src/matrix/data1.bin");
+    MapManager();
+    //map_init(MAP01, BIN);         //->old
+    //GetStruct(BIN);               //->old
     Player *joueur = NULL;
     joueur = new_player("Buble Buble");
     print_player(joueur);
