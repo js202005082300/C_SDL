@@ -8,17 +8,19 @@
 #include "game.h" // tmp : juste pour les defines
 
 #define MAP01 "src/matrix/niveau1.lvl"
+#define MAP02 "src/matrix/niveau2.lvl"
+#define MAP06 "src/matrix/niveau6.lvl"
 #define BIN "src/matrix/data1.bin"
 
 
-// Définition de MapPosition
+// Definition de MapPosition
 typedef struct MapPos
 {
 	int xscroll;
 	int yscroll;
 }MapPos;
 
-// Définition de MapSize
+// Definition de MapSize
 typedef struct MapSize
 {
 	int rows;
@@ -26,7 +28,7 @@ typedef struct MapSize
 	int nb_block;
 }MapSize;
 
-// Définition d'une carte
+// Definition d'une carte
 typedef struct Map
 {
 	int **matrix;
@@ -49,5 +51,6 @@ MapSize *test_lecture(const char *filename);
 
 void printMapToTheConsole(Map *m);
 void PrintSize(MapSize *mSize);
+void drawMap(Map *m);
 
 #endif

@@ -1,4 +1,5 @@
 #include "game.h"
+#include "map.h"
 
 void SDL_versionUsed(void)
 {
@@ -9,44 +10,59 @@ void SDL_versionUsed(void)
 
 void SDL_gameManager(void)
 {
-    MapManager();
-    //map_init(MAP01, BIN);         //->old
-    //GetStruct(BIN);               //->old
+    App *app = NULL;
+    Map *map = NULL;
     Player *joueur = NULL;
-    joueur = new_player("Buble Buble");
-    print_player(joueur);
-
+    
+    joueur = new_player("Buble Buble"); print_player(joueur);
     joueur->score += 5;
     joueur->position->X += 3;
     joueur->position->Y += 6;
-    print_player(joueur);
+    // print_player(joueur);
     save_game(joueur);
     free_player(joueur);
 
     // Initialisation
-    App *app = SDL_initGame();
+    app = SDL_initGame();
+    map = new_map(MAP02);
+    // printMapToTheConsole(map);
 
     // Texture
-    SDL_Texture *texture_background = SDL_loadTexture("src/background.png", app);
-    SDL_Texture *texture_player = SDL_loadTexture("src/sprite-100.png", app);
+    SDL_Texture *texture_background = SDL_loadTexture("src/pics/background-scroll.png", app);
+    SDL_Texture *texture_player = SDL_loadTexture("src/pics/sprite-100.png", app);
+    SDL_Texture *texture_brick = SDL_loadTexture("src/pics/brick-10.png", app);
+    if(texture_background == NULL || texture_player == NULL || texture_brick == NULL)
+    { exit(1); }
+
+    printf("[%d/%d=%d | %d/%d=%d]\n", WINDOW_WIDTH, map->MapSize->rows, WINDOW_WIDTH/map->MapSize->rows, WINDOW_HEIGHT, map->MapSize->columns, WINDOW_HEIGHT/map->MapSize->columns);
 
     // Evenement
     SDL_bool program_launched = SDL_TRUE;
     SDL_bool *ptr = &program_launched;
     unsigned int *X = &joueur->position->X;
     unsigned int *Y = &joueur->position->Y;
+    //unsigned int minX, maxX, minY, maxY;
     while(*ptr)
     {
         SDL_doInput(ptr, X, Y);
 
-        SDL_renderTexture(texture_background, app, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-        SDL_renderTexture(texture_player, app, joueur->position->X, joueur->position->Y, SQUARE_SIZE, SQUARE_SIZE);   
+        //
+        SDL_renderTexture(texture_background, app, 0, 0);
+        SDL_renderTexture(texture_player, app, joueur->position->X, joueur->position->Y);
+
+        for(int i=0 ; i < map->MapSize->rows ; i++)
+            for(int j=0 ; j < map->MapSize->columns ; j++)
+                if(map->matrix[i][j] == '1')
+                    SDL_renderTexture(texture_brick, app, j*SQUARE_SIZE, i*SQUARE_SIZE);
+
         SDL_RenderPresent(app->renderer);
     }
 
     // Clean up
+    SDL_CleanRessources(NULL, NULL, texture_brick);
+    SDL_CleanRessources(NULL, NULL, texture_player);
     SDL_CleanRessources(app->window, app->renderer, texture_background);
-    SDL_CleanRessources(app->window, app->renderer, texture_player);
+    free_map(map);
 }
 
 App *SDL_initGame(void)
@@ -78,6 +94,7 @@ App *SDL_initGame(void)
     return app;
 }
 
+//load texture
 SDL_Texture *SDL_loadTexture(char *filename, App *app)
 {
     SDL_Texture *texture = NULL;
@@ -101,9 +118,15 @@ SDL_Texture *SDL_loadTexture(char *filename, App *app)
     return texture;
 }
 
-void SDL_renderTexture(SDL_Texture *texture, App *app, int x, int y, int w, int h)
+/*
+ *      A quoi servent w et h si on ne peut pas redimentionner les blocks ?
+ *      SDL_QueryTexture et SDL_RenderCopy
+ *
+ */ 
+//blit
+void SDL_renderTexture(SDL_Texture *texture, App *app, int x, int y)
 {
-    SDL_Rect rectangle = {x, y, w, h};
+    SDL_Rect rectangle = {x, y};
 
     //Chargement texture
     if(SDL_QueryTexture(texture, NULL, NULL, &rectangle.w, &rectangle.h) != 0)
@@ -134,19 +157,19 @@ void SDL_doInput(SDL_bool *program_launched, unsigned int *x, unsigned int *y)
                 switch(event.key.keysym.sym)
                 {
                     case SDLK_LEFT:
-                        *x -= 10;
+                        *x -= SQUARE_SIZE;
                         printf("(%d,%d)\n", *x, *y);
                         continue;
                     case SDLK_RIGHT:
-                        *x += 10;
+                        *x += SQUARE_SIZE;
                         printf("(%d,%d)\n", *x, *y);
                         continue;
                     case SDLK_UP:
-                        *y -=10;
+                        *y -= SQUARE_SIZE;
                         printf("(%d,%d)\n", *x, *y);
                         continue;
                     case SDLK_DOWN:
-                        *y +=10;
+                        *y += SQUARE_SIZE;
                         printf("(%d,%d)\n", *x, *y);
                         continue;
                     case SDLK_b:

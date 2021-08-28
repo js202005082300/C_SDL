@@ -1,16 +1,18 @@
 #include "map.h"
 
+
 void MapManager(void)
 {
+	/*
 	Map *mapLevel01 = new_map(MAP01);
 	printMapToTheConsole(mapLevel01);
 	test_ecriture(mapLevel01->MapSize, BIN);
 	MapSize *test = test_lecture(BIN);
 	PrintSize(test);
 	free_map(mapLevel01);
+	*/
 	return;
 }
-
 // ----------------------------------------------------
 //  Memory allocation and affectation.
 // ----------------------------------------------------
@@ -152,7 +154,7 @@ void printMapToTheConsole(Map *m)
 	for(int i=0 ; i < m->MapSize->rows ; i++){
 		printf("\n");
 		for(int j=0 ; j < m->MapSize->columns ; j++)
-			printf("%c", m->matrix[i][j]);
+				printf("%c", m->matrix[i][j]);
 	}
 	printf("\n");
 	printf("============================\n");
@@ -162,6 +164,16 @@ void PrintSize(MapSize *mSize)
 {
 	printf("PrintSize : %d | %d | %d\n", mSize->rows, mSize->columns, mSize->nb_block);
 	return;
+}
+
+void drawMap(Map *m)
+{
+	/*
+	for(int i=0 ; i < m->MapSize->rows ; i++){
+		for(int j=0 ; j < m->MapSize->columns ; j++)
+			printf("%c", m->matrix[i][j]);
+	}
+	*/
 }
 
 // ----------------------------------------------------
@@ -175,9 +187,7 @@ void free_map(Map *map)
 		free(map->matrix[i]);
 	}
 	free(map->matrix);
-
 	free(map->MapPos);
-
 	free(map->MapSize);
 
 	free(map);
