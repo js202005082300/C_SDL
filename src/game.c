@@ -34,29 +34,46 @@ void SDL_gameManager(void)
     if(texture_background == NULL || texture_player == NULL || texture_brick == NULL)
     { exit(1); }
 
-    printf("[%d/%d=%d | %d/%d=%d]\n", WINDOW_WIDTH, map->MapSize->rows, WINDOW_WIDTH/map->MapSize->rows, WINDOW_HEIGHT, map->MapSize->columns, WINDOW_HEIGHT/map->MapSize->columns);
+    printf("[%d/%d | %d/%d]\n", WINDOW_WIDTH, map->MapSize->columns, WINDOW_HEIGHT, map->MapSize->rows);
 
     // Evenement
     SDL_bool program_launched = SDL_TRUE;
     SDL_bool *ptr = &program_launched;
     unsigned int *X = &joueur->position->X;
     unsigned int *Y = &joueur->position->Y;
-    //unsigned int minX, maxX, minY, maxY;
+    //-Scrooling-
+    unsigned int minX, maxX, minY, maxY;
+
     while(*ptr)
     {
+        // Entrée au clavier
         SDL_doInput(ptr, X, Y);
 
-        //
-        SDL_renderTexture(texture_background, app, 0, 0);
-        SDL_renderTexture(texture_player, app, joueur->position->X, joueur->position->Y);
+        minX = (*X+100/2-WINDOW_WIDTH/2)/SQUARE_SIZE-1;
+        maxX = (*X+100/2+WINDOW_WIDTH/2)/SQUARE_SIZE;
 
-        for(int i=0 ; i < map->MapSize->rows ; i++)
-            for(int j=0 ; j < map->MapSize->columns ; j++)
+        minY = (*Y+100/2-WINDOW_HEIGHT/2)/SQUARE_SIZE-1;
+        maxY = (*Y+100/2+WINDOW_HEIGHT/2)/SQUARE_SIZE;
+
+        if(minX<0){ minX=0; }
+        if(minY<0){ minY=0; }
+        if(maxX>map->MapSize->rows) { maxX=map->MapSize->rows; }
+        if(maxY>map->MapSize->columns) { maxY=map->MapSize->columns; }
+
+        // Affichage
+        SDL_renderTexture(texture_background, app, 0, 0);
+        SDL_renderTexture(texture_player, app, *X, *Y);
+        for(int i=0 ; i < map->MapSize->rows ; i++) // map->MapSize->rows
+            for(int j=0 ; j < map->MapSize->columns ; j++) // map->MapSize->columns
                 if(map->matrix[i][j] == '1')
                     SDL_renderTexture(texture_brick, app, j*SQUARE_SIZE, i*SQUARE_SIZE);
 
+        // Gestion rendus
         SDL_RenderPresent(app->renderer);
     }
+
+    printf("minX : %d | maxX : %d | minY : %d | maxY : %d\n", minX, maxX, minY, maxY);
+    printf("X : %d | Y : %d\n", *X, *Y);
 
     // Clean up
     SDL_CleanRessources(NULL, NULL, texture_brick);
@@ -118,11 +135,6 @@ SDL_Texture *SDL_loadTexture(char *filename, App *app)
     return texture;
 }
 
-/*
- *      A quoi servent w et h si on ne peut pas redimentionner les blocks ?
- *      SDL_QueryTexture et SDL_RenderCopy
- *
- */ 
 //blit
 void SDL_renderTexture(SDL_Texture *texture, App *app, int x, int y)
 {
@@ -158,19 +170,16 @@ void SDL_doInput(SDL_bool *program_launched, unsigned int *x, unsigned int *y)
                 {
                     case SDLK_LEFT:
                         *x -= SQUARE_SIZE;
-                        printf("(%d,%d)\n", *x, *y);
+                        //printf("(%d,%d)\n", *x, *y);
                         continue;
                     case SDLK_RIGHT:
                         *x += SQUARE_SIZE;
-                        printf("(%d,%d)\n", *x, *y);
                         continue;
                     case SDLK_UP:
                         *y -= SQUARE_SIZE;
-                        printf("(%d,%d)\n", *x, *y);
                         continue;
                     case SDLK_DOWN:
                         *y += SQUARE_SIZE;
-                        printf("(%d,%d)\n", *x, *y);
                         continue;
                     case SDLK_b:
                         continue;
