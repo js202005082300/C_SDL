@@ -14,7 +14,7 @@ void SDL_gameManager(void)
     Map *map = NULL;
     Player *joueur = NULL;
     
-    joueur = new_player("Buble Buble"); print_player(joueur);
+    joueur = new_player("Buble Buble");
     joueur->score += 5;
     joueur->position->X += 3;
     joueur->position->Y += 6;
@@ -34,46 +34,52 @@ void SDL_gameManager(void)
     if(texture_background == NULL || texture_player == NULL || texture_brick == NULL)
     { exit(1); }
 
-    printf("[%d/%d | %d/%d]\n", WINDOW_WIDTH, map->MapSize->columns, WINDOW_HEIGHT, map->MapSize->rows);
-
     // Evenement
-    SDL_bool program_launched = SDL_TRUE;
+    SDL_bool program_launched = SDL_TRUE; 
     SDL_bool *ptr = &program_launched;
-    unsigned int *X = &joueur->position->X;
-    unsigned int *Y = &joueur->position->Y;
-    //-Scrooling-
-    unsigned int minX, maxX, minY, maxY;
+    int *X = &joueur->position->X;
+    int *Y = &joueur->position->Y;
+    int *Xs = &map->position->xscroll;
+    int *Ys = &map->position->yscroll;
+    int minX, minY, maxX, maxY;
 
     while(*ptr)
     {
         // Entrée au clavier
         SDL_doInput(ptr, X, Y);
 
-        minX = (*X+100/2-WINDOW_WIDTH/2)/SQUARE_SIZE-1;
-        maxX = (*X+100/2+WINDOW_WIDTH/2)/SQUARE_SIZE;
+        /* ------ RECHERCHE A PROPOS DU SCROLL -------- */
+        *Xs = *X + 50 - WINDOW_WIDTH/2;     if(*Xs<0){ *Xs=0; } if(*Xs>map->size->columns*SQUARE_SIZE - WINDOW_WIDTH){ *Xs=map->size->columns*SQUARE_SIZE - WINDOW_WIDTH; }
+        *Ys = *Y + 50 - WINDOW_HEIGHT/2;    if(*Ys<0){ *Ys=0; } if(*Ys>map->size->rows*SQUARE_SIZE - WINDOW_HEIGHT){ *Ys=map->size->rows*SQUARE_SIZE - WINDOW_HEIGHT; }
 
-        minY = (*Y+100/2-WINDOW_HEIGHT/2)/SQUARE_SIZE-1;
-        maxY = (*Y+100/2+WINDOW_HEIGHT/2)/SQUARE_SIZE;
-
-        if(minX<0){ minX=0; }
-        if(minY<0){ minY=0; }
-        if(maxX>map->MapSize->rows) { maxX=map->MapSize->rows; }
-        if(maxY>map->MapSize->columns) { maxY=map->MapSize->columns; }
+        minX=*Xs / SQUARE_SIZE;
+        minY=*Ys / SQUARE_SIZE;
+        maxX=(*Xs + WINDOW_WIDTH) / SQUARE_SIZE;
+        maxY=(*Ys + WINDOW_HEIGHT) / SQUARE_SIZE;
+        /* -------------------------------------------- */
 
         // Affichage
-        SDL_renderTexture(texture_background, app, 0, 0);
-        SDL_renderTexture(texture_player, app, *X, *Y);
-        for(int i=0 ; i < map->MapSize->rows ; i++) // map->MapSize->rows
-            for(int j=0 ; j < map->MapSize->columns ; j++) // map->MapSize->columns
+        SDL_renderTexture(texture_background, app, 0 - *Xs, 0 - *Ys); //scroll à appliquer
+        SDL_renderTexture(texture_player, app, *X - *Xs, *Y - *Ys); //scroll à appliquer
+        for(int i=minY ; i < maxY ; i++)
+            for(int j=minX ; j < maxX ; j++)
                 if(map->matrix[i][j] == '1')
-                    SDL_renderTexture(texture_brick, app, j*SQUARE_SIZE, i*SQUARE_SIZE);
+                    SDL_renderTexture(texture_brick, app, j*SQUARE_SIZE - *Xs, i*SQUARE_SIZE - *Ys); //scroll à appliquer
 
         // Gestion rendus
         SDL_RenderPresent(app->renderer);
     }
 
-    printf("minX : %d | maxX : %d | minY : %d | maxY : %d\n", minX, maxX, minY, maxY);
+    //
+    // ----------------------- TEST ---------------------------------------
+    //
     printf("X : %d | Y : %d\n", *X, *Y);
+    printf("WINDOW_WIDTH : %d | WINDOW_HEIGHT : %d | SQUARE_SIZE : %d\n", WINDOW_WIDTH, WINDOW_HEIGHT, SQUARE_SIZE);
+    printf("columns : %d | rows : %d\n", map->size->columns, map->size->rows);
+    printf("xscroll : %d | yscroll : %d\n", map->position->xscroll, map->position->yscroll);
+    printf("Limite X : %d | Limite Y : %d\n", map->size->columns*SQUARE_SIZE - WINDOW_WIDTH, map->size->rows*SQUARE_SIZE - WINDOW_HEIGHT);
+    printf("min X : %d | min Y : %d | max X : %d | max Y : %d\n", minX, minY, maxX, maxY);
+    // --------------------------------------------------------------------
 
     // Clean up
     SDL_CleanRessources(NULL, NULL, texture_brick);
@@ -157,7 +163,7 @@ void SDL_renderTexture(SDL_Texture *texture, App *app, int x, int y)
     return;
 }
 
-void SDL_doInput(SDL_bool *program_launched, unsigned int *x, unsigned int *y)
+void SDL_doInput(SDL_bool *program_launched, int *x, int *y)
 {
     SDL_Event event;
     
@@ -174,12 +180,15 @@ void SDL_doInput(SDL_bool *program_launched, unsigned int *x, unsigned int *y)
                         continue;
                     case SDLK_RIGHT:
                         *x += SQUARE_SIZE;
+                        //printf("(%d,%d)\n", *x, *y);
                         continue;
                     case SDLK_UP:
                         *y -= SQUARE_SIZE;
+                        //printf("(%d,%d)\n", *x, *y);
                         continue;
                     case SDLK_DOWN:
                         *y += SQUARE_SIZE;
+                        //printf("(%d,%d)\n", *x, *y);
                         continue;
                     case SDLK_b:
                         continue;

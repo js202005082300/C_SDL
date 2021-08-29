@@ -14,8 +14,8 @@ typedef enum
 }Bool;
 
 typedef struct Position {
-    unsigned int X;
-    unsigned int Y;
+    int X;
+    int Y;
 }Position;
 
 // Définition d'un Joueur

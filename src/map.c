@@ -6,7 +6,7 @@ void MapManager(void)
 	/*
 	Map *mapLevel01 = new_map(MAP01);
 	printMapToTheConsole(mapLevel01);
-	test_ecriture(mapLevel01->MapSize, BIN);
+	test_ecriture(mapLevel01->size, BIN);
 	MapSize *test = test_lecture(BIN);
 	PrintSize(test);
 	free_map(mapLevel01);
@@ -26,9 +26,9 @@ Map *new_map(const char *fileLevel)
 		{ fprintf(stderr,"Error : No such file or directory : %s\n",fileLevel); exit(EXIT_FAILURE); }
 
 	m = InitMap();
-	m->MapSize = GetSizeMatrix(fic);
-	m->matrix = GetMatrix(fic, m->MapSize->rows, m->MapSize->columns);
-	m->MapPos = InitMapPos();
+	m->size = GetSizeMatrix(fic);
+	m->matrix = GetMatrix(fic, m->size->rows, m->size->columns);
+	m->position = InitMapPos();
 
 	fclose(fic);
 	return m;
@@ -149,11 +149,11 @@ MapSize *test_lecture(const char *filename)
 void printMapToTheConsole(Map *m)
 {
 	printf("=========== Map ============\n");
-	printf("Lignes : %d\nColonnes : %d\nNombre de blocs : %d\nXscroll : %d\nYscroll : %d\n", m->MapSize->rows, m->MapSize->columns, m->MapSize->nb_block, m->MapPos->xscroll, m->MapPos->yscroll);
+	printf("Lignes : %d\nColonnes : %d\nNombre de blocs : %d\nXscroll : %d\nYscroll : %d\n", m->size->rows, m->size->columns, m->size->nb_block, m->position->xscroll, m->position->yscroll);
 
-	for(int i=0 ; i < m->MapSize->rows ; i++){
+	for(int i=0 ; i < m->size->rows ; i++){
 		printf("\n");
-		for(int j=0 ; j < m->MapSize->columns ; j++)
+		for(int j=0 ; j < m->size->columns ; j++)
 				printf("%c", m->matrix[i][j]);
 	}
 	printf("\n");
@@ -169,8 +169,8 @@ void PrintSize(MapSize *mSize)
 void drawMap(Map *m)
 {
 	/*
-	for(int i=0 ; i < m->MapSize->rows ; i++){
-		for(int j=0 ; j < m->MapSize->columns ; j++)
+	for(int i=0 ; i < m->size->rows ; i++){
+		for(int j=0 ; j < m->size->columns ; j++)
 			printf("%c", m->matrix[i][j]);
 	}
 	*/
@@ -182,13 +182,13 @@ void drawMap(Map *m)
 
 void free_map(Map *map)
 {
-	for(int i = 0 ; i < map->MapSize->rows ; i++)
+	for(int i = 0 ; i < map->size->rows ; i++)
 	{
 		free(map->matrix[i]);
 	}
 	free(map->matrix);
-	free(map->MapPos);
-	free(map->MapSize);
+	free(map->position);
+	free(map->size);
 
 	free(map);
 

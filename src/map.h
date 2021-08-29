@@ -23,17 +23,17 @@ typedef struct MapPos
 // Definition de MapSize
 typedef struct MapSize
 {
-	int rows;
-	int columns;
-	int nb_block;
+	unsigned int rows;
+	unsigned int columns;
+	unsigned int nb_block;
 }MapSize;
 
 // Definition d'une carte
 typedef struct Map
 {
 	int **matrix;
-	MapSize *MapSize;
-	MapPos *MapPos;
+	MapSize *size;
+	MapPos *position;
 }Map;
 
 // Prototypes des fonctions

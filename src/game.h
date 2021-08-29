@@ -33,7 +33,7 @@ void SDL_gameManager(void);
 App *SDL_initGame(void);
 SDL_Texture *SDL_loadTexture(char *filename, App *app);
 void SDL_renderTexture(SDL_Texture *texture, App *app, int x, int y);
-void SDL_doInput(SDL_bool *program_launched, unsigned int *x, unsigned int *y);
+void SDL_doInput(SDL_bool *program_launched, int *x, int *y);
 void SDL_ExitWithError(const char *message);
 void SDL_freeGame(App *app);
 void SDL_CleanRessources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t);
