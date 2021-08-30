@@ -24,6 +24,9 @@ void SDL_gameManager(void)
 
     // Initialisation
     app = SDL_initGame();
+    //
+    // Ici TTF_init()
+    //
     map = new_map(MAP02);
     // printMapToTheConsole(map);
 
@@ -86,6 +89,9 @@ void SDL_gameManager(void)
     SDL_CleanRessources(NULL, NULL, texture_player);
     SDL_CleanRessources(app->window, app->renderer, texture_background);
     free_map(map);
+
+    TTF_Quit();
+    SDL_Quit();
 }
 
 App *SDL_initGame(void)
@@ -242,6 +248,4 @@ void SDL_CleanRessources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t)
 
     if(w != NULL)
         SDL_DestroyWindow(w);
-    
-    SDL_Quit();
 }
