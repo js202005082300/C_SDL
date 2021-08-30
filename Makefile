@@ -6,7 +6,7 @@ SRC = $(wildcard src/*.c)
 OBJ = $(SRC: .c=.o)
 CFLAGS = -I include -Wall -Werror -std=c11 -pedantic-errors #-Wextra
 LIBS = -L lib
-LDFLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+LDFLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
 
 all: $(EXEC)
 

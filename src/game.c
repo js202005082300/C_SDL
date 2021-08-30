@@ -1,5 +1,5 @@
 #include "game.h"
-#include "map.h"
+//#include "map.h"
 
 void SDL_versionUsed(void)
 {
@@ -24,11 +24,13 @@ void SDL_gameManager(void)
 
     // Initialisation
     app = SDL_initGame();
-    //
-    // Ici TTF_init()
-    //
     map = new_map(MAP02);
     // printMapToTheConsole(map);
+
+    // TTF_Font (initialisé dans SDL_initGame)
+    TTF_Font * font = TTF_OpenFont("arial.ttf", 25);
+    const char * error = TTF_GetError();
+    SDL_Color color = { 255, 255, 255 };
 
     // Texture
     SDL_Texture *texture_background = SDL_loadTexture("src/pics/background-scroll.png", app);
@@ -89,9 +91,6 @@ void SDL_gameManager(void)
     SDL_CleanRessources(NULL, NULL, texture_player);
     SDL_CleanRessources(app->window, app->renderer, texture_background);
     free_map(map);
-
-    TTF_Quit();
-    SDL_Quit();
 }
 
 App *SDL_initGame(void)
@@ -106,6 +105,9 @@ App *SDL_initGame(void)
     //Lancement SDL
     if(SDL_Init(SDL_INIT_VIDEO)!=0)
         SDL_ExitWithError("Initialisation SDL echouee");
+
+    //Lancement SDL_TTF
+    SDL_textInit();
 
     //Creation fenetre
     app->window = SDL_CreateWindow("Jeu C/SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
@@ -248,4 +250,6 @@ void SDL_CleanRessources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t)
 
     if(w != NULL)
         SDL_DestroyWindow(w);
+
+    SDL_Quit();
 }

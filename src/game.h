@@ -9,6 +9,7 @@
 #include "game.h"
 #include "map.h"
 #include "save.h"
+#include "write.h"
 
 #define SQUARE_SIZE 10
 /*--------------------------------------------------------*/
