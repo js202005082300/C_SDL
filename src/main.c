@@ -3,6 +3,6 @@
 int main(int argc, char *argv[])
 {
     //SDL_versionUsed();
-    SDL_gameManager();
+    SDL_GameManager();
     return EXIT_SUCCESS;
 }

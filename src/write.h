@@ -7,8 +7,10 @@
 #include <SDL.h>
 
 //	Definitions
-void SDL_textInit(void);
-SDL_Texture *SDL_loadTexture(TTF_Font *font, char *message, SDL_Color color, SDL_Window *window, SDL_Renderer *renderer);
-void SDL_CleanTextRessources(SDL_Texture *texture, TTF_Font *font);
+void TTF_InitText(void);
+SDL_Texture *TTF_LoadTexture(TTF_Font *font, char *message, SDL_Color color, SDL_Renderer *renderer, SDL_Window *window);
+void TTF_RenderTexture(SDL_Texture *texture, SDL_Renderer *renderer, SDL_Window *window, int x, int y);
+void TTF_ExitWithError(const char *message);
+void TTF_CleanTextRessources(SDL_Texture *texture, TTF_Font *font);
 
 #endif

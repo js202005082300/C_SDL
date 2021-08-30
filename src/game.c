@@ -1,14 +1,14 @@
 #include "game.h"
 //#include "map.h"
 
-void SDL_versionUsed(void)
+void SDL_VersionUsed(void)
 {
     SDL_version nb;
     SDL_VERSION(&nb);
     printf("Bienvenue sur la SDL %d.%d.%d !\n",nb.major, nb.minor, nb.patch);
 }
 
-void SDL_gameManager(void)
+void SDL_GameManager(void)
 {
     App *app = NULL;
     Map *map = NULL;
@@ -23,19 +23,20 @@ void SDL_gameManager(void)
     free_player(joueur);
 
     // Initialisation
-    app = SDL_initGame();
+    app = SDL_InitGame();
     map = new_map(MAP02);
     // printMapToTheConsole(map);
 
     // TTF_Font (initialisé dans SDL_initGame)
-    TTF_Font * font = TTF_OpenFont("arial.ttf", 25);
-    const char * error = TTF_GetError();
-    SDL_Color color = { 255, 255, 255 };
+    //TTF_Font * font = TTF_OpenFont("arial.ttf", 25);
+    //char *message = "Petit jeu tout simple";
+    //SDL_Color color = { 255, 255, 255 };
 
     // Texture
-    SDL_Texture *texture_background = SDL_loadTexture("src/pics/background-scroll.png", app);
-    SDL_Texture *texture_player = SDL_loadTexture("src/pics/sprite-100.png", app);
-    SDL_Texture *texture_brick = SDL_loadTexture("src/pics/brick-10.png", app);
+    SDL_Texture *texture_background = SDL_LoadTexture("src/pics/background-scroll.png", app);
+    SDL_Texture *texture_player = SDL_LoadTexture("src/pics/sprite-100.png", app);
+    SDL_Texture *texture_brick = SDL_LoadTexture("src/pics/brick-10.png", app);
+    //SDL_Texture *text = TTF_LoadTexture(font, message, color, app->renderer, app->window);
     if(texture_background == NULL || texture_player == NULL || texture_brick == NULL)
     { exit(1); }
 
@@ -51,7 +52,7 @@ void SDL_gameManager(void)
     while(*ptr)
     {
         // Entrée au clavier
-        SDL_doInput(ptr, X, Y);
+        SDL_DoInput(ptr, X, Y);
 
         /* ------ RECHERCHE A PROPOS DU SCROLL -------- */
         *Xs = *X + 50 - WINDOW_WIDTH/2;     if(*Xs<0){ *Xs=0; } if(*Xs>map->size->columns*SQUARE_SIZE - WINDOW_WIDTH){ *Xs=map->size->columns*SQUARE_SIZE - WINDOW_WIDTH; }
@@ -64,13 +65,14 @@ void SDL_gameManager(void)
         /* -------------------------------------------- */
 
         // Affichage
-        SDL_renderTexture(texture_background, app, 0 - *Xs, 0 - *Ys); //scroll à appliquer
-        SDL_renderTexture(texture_player, app, *X - *Xs, *Y - *Ys); //scroll à appliquer
+        SDL_RenderTexture(texture_background, app, 0 - *Xs, 0 - *Ys); //scroll à appliquer
+        SDL_RenderTexture(texture_player, app, *X - *Xs, *Y - *Ys); //scroll à appliquer
         for(int i=minY ; i < maxY ; i++)
             for(int j=minX ; j < maxX ; j++)
                 if(map->matrix[i][j] == '1')
-                    SDL_renderTexture(texture_brick, app, j*SQUARE_SIZE - *Xs, i*SQUARE_SIZE - *Ys); //scroll à appliquer
+                    SDL_RenderTexture(texture_brick, app, j*SQUARE_SIZE - *Xs, i*SQUARE_SIZE - *Ys); //scroll à appliquer
 
+        //TTF_RenderTexture(text, app->renderer, app->window, 0, 0);
         // Gestion rendus
         SDL_RenderPresent(app->renderer);
     }
@@ -87,13 +89,14 @@ void SDL_gameManager(void)
     // --------------------------------------------------------------------
 
     // Clean up
+    //TTF_CleanTextRessources(text, font);
     SDL_CleanRessources(NULL, NULL, texture_brick);
     SDL_CleanRessources(NULL, NULL, texture_player);
     SDL_CleanRessources(app->window, app->renderer, texture_background);
     free_map(map);
 }
 
-App *SDL_initGame(void)
+App *SDL_InitGame(void)
 {
     App *app = malloc(sizeof(*app));
     app->window = malloc(sizeof(app->window));
@@ -107,7 +110,7 @@ App *SDL_initGame(void)
         SDL_ExitWithError("Initialisation SDL echouee");
 
     //Lancement SDL_TTF
-    SDL_textInit();
+    TTF_InitText();
 
     //Creation fenetre
     app->window = SDL_CreateWindow("Jeu C/SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
@@ -126,7 +129,7 @@ App *SDL_initGame(void)
 }
 
 //load texture
-SDL_Texture *SDL_loadTexture(char *filename, App *app)
+SDL_Texture *SDL_LoadTexture(char *filename, App *app)
 {
     SDL_Texture *texture = NULL;
     SDL_Surface *surface = NULL;
@@ -150,7 +153,7 @@ SDL_Texture *SDL_loadTexture(char *filename, App *app)
 }
 
 //blit
-void SDL_renderTexture(SDL_Texture *texture, App *app, int x, int y)
+void SDL_RenderTexture(SDL_Texture *texture, App *app, int x, int y)
 {
     SDL_Rect rectangle = {x, y};
 
@@ -171,7 +174,7 @@ void SDL_renderTexture(SDL_Texture *texture, App *app, int x, int y)
     return;
 }
 
-void SDL_doInput(SDL_bool *program_launched, int *x, int *y)
+void SDL_DoInput(SDL_bool *program_launched, int *x, int *y)
 {
     SDL_Event event;
     
@@ -234,7 +237,7 @@ void SDL_ExitWithError(const char *message)
     exit(EXIT_FAILURE);
 }
 
-void SDL_freeGame(App *app)
+void SDL_FreeGame(App *app)
 {
     if(app != NULL)
         free(app);

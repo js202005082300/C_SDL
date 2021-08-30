@@ -11,6 +11,6 @@
 
 ToDo
 + [x] Scrool
-+ [] dessiner texte
++ [] TTF : dessiner texte
 + [] Collision
 + [] Saut et gravité
