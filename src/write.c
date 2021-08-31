@@ -6,6 +6,22 @@ void TTF_InitText(void)
         TTF_ExitWithError("TTF_InitText");
 }
 
+TTF_Font * TTF_LoadFont()
+{
+    TTF_Font *font = NULL;
+    font = TTF_OpenFont(FONT_PATH, 25);
+    if(!font)
+        TTF_ExitWithError("TTF_InitFont");
+
+    return font;
+}
+
+SDL_Color TTF_textColor()
+{
+    SDL_Color textColor = { 0x00, 0x00, 0x00, 0xFF };
+    return textColor;
+}
+
 //load texture
 SDL_Texture *TTF_LoadTexture(TTF_Font *font, char *message, SDL_Color color, SDL_Renderer *renderer, SDL_Window *window)
 {
@@ -40,8 +56,7 @@ void TTF_RenderTexture(SDL_Texture *texture, SDL_Renderer *renderer, SDL_Window 
 
 void TTF_ExitWithError(const char *message)
 {
-    const char * error = TTF_GetError();
-    printf("%s: %s\n", message, error);
+    fprintf(stderr, "Erreur %s : %s\n", message, TTF_GetError());
     exit(EXIT_FAILURE);
 }
 
@@ -49,6 +64,7 @@ void TTF_CleanTextRessources(SDL_Texture *texture, TTF_Font *font)
 {
     SDL_DestroyTexture(texture);
     TTF_CloseFont(font);
-
+    texture = NULL;
+    font = NULL;
     TTF_Quit();
 }

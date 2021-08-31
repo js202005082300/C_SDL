@@ -13,6 +13,8 @@ void SDL_GameManager(void)
     App *app = NULL;
     Map *map = NULL;
     Player *joueur = NULL;
+    int score = 0;
+    char buffer[50];
     
     joueur = new_player("Buble Buble");
     joueur->score += 5;
@@ -28,15 +30,14 @@ void SDL_GameManager(void)
     // printMapToTheConsole(map);
 
     // TTF_Font (initialisé dans SDL_initGame)
-    //TTF_Font * font = TTF_OpenFont("arial.ttf", 25);
-    //char *message = "Petit jeu tout simple";
-    //SDL_Color color = { 255, 255, 255 };
+    TTF_Font * font = TTF_LoadFont();
+    SDL_Color color = TTF_textColor();
 
     // Texture
     SDL_Texture *texture_background = SDL_LoadTexture("src/pics/background-scroll.png", app);
     SDL_Texture *texture_player = SDL_LoadTexture("src/pics/sprite-100.png", app);
     SDL_Texture *texture_brick = SDL_LoadTexture("src/pics/brick-10.png", app);
-    //SDL_Texture *text = TTF_LoadTexture(font, message, color, app->renderer, app->window);
+    SDL_Texture *text = NULL;
     if(texture_background == NULL || texture_player == NULL || texture_brick == NULL)
     { exit(1); }
 
@@ -72,7 +73,13 @@ void SDL_GameManager(void)
                 if(map->matrix[i][j] == '1')
                     SDL_RenderTexture(texture_brick, app, j*SQUARE_SIZE - *Xs, i*SQUARE_SIZE - *Ys); //scroll à appliquer
 
-        //TTF_RenderTexture(text, app->renderer, app->window, 0, 0);
+        /* ------ RECHERCHE A PROPOS DE TTF SDL ------- */
+        score = 100;
+        sprintf(buffer, "SCORE: %d", score);
+        text = TTF_LoadTexture(font, buffer, color, app->renderer, app->window);
+        TTF_RenderTexture(text, app->renderer, app->window, 0, 0);
+        /* -------------------------------------------- */
+
         // Gestion rendus
         SDL_RenderPresent(app->renderer);
     }
@@ -89,7 +96,7 @@ void SDL_GameManager(void)
     // --------------------------------------------------------------------
 
     // Clean up
-    //TTF_CleanTextRessources(text, font);
+    TTF_CleanTextRessources(text, font);
     SDL_CleanRessources(NULL, NULL, texture_brick);
     SDL_CleanRessources(NULL, NULL, texture_player);
     SDL_CleanRessources(app->window, app->renderer, texture_background);

@@ -19,8 +19,8 @@ $(EXEC) : $(OBJ)
 #clean:
 #	del /q /f test.txt
 
-write:
-	gcc src/write.c -o bin/prog -I include/ include -Wall -Wextra -Werror -std=c11 -pedantic-errors -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL_ttf
+test:
+	gcc test.c -o bin/prog -I include -Wall -Wextra -Werror -std=c11 -pedantic-errors -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
 
 # gcc src/*.c -o bin/prog -I include -Wall -Wextra -Werror -std=c11 -pedantic-errors -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
 # gcc src/*.c -o bin/prog $(SDL2-config --cflags --libs)
