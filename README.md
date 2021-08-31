@@ -10,7 +10,7 @@
 [SDL2_ttf](http://www.libsdl.org/projects/SDL_ttf/)|2.0.15|x64
 
 ToDo
-[x] Scrooling
-[ ] TTF : dessiner texte
-[ ] Collision
-[ ] Saut et gravité
++ [x] Scrooling
++ [ ] TTF : dessiner texte
++ [ ] Collision
++ [ ] Saut et gravité
