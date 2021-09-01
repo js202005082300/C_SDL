@@ -84,7 +84,7 @@ void SDL_GameManager(void)
         TTF_RenderTexture(text, app->renderer, app->window, 0, 50);
         /* -------------------------------------------- */
 
-        printDatasToTheConsole(map, joueur);
+        //printDatasToTheConsole(map, joueur);
 
         // Gestion rendus
         SDL_RenderPresent(app->renderer);
