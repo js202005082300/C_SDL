@@ -9,7 +9,7 @@ void TTF_InitText(void)
 TTF_Font * TTF_LoadFont()
 {
     TTF_Font *font = NULL;
-    font = TTF_OpenFont(FONT_PATH, 25);
+    font = TTF_OpenFont(FONT_PATH, FONT_SIZE);
     if(!font)
         TTF_ExitWithError("TTF_InitFont");
 
@@ -22,36 +22,29 @@ SDL_Color TTF_textColor()
     return textColor;
 }
 
-//load texture
-SDL_Texture *TTF_LoadTexture(TTF_Font *font, char *message, SDL_Color color, SDL_Renderer *renderer, SDL_Window *window)
+//load text
+SDL_Texture *TTF_LoadTexture(char *buffer, TTF_Font *font, SDL_Color color, SDL_Renderer *renderer, SDL_Window *window)
 {
-    SDL_Texture *texture = NULL;
     SDL_Surface *surface = NULL;
+    SDL_Texture *texture = NULL;
 
-    //Chargement surface
-    surface = TTF_RenderText_Solid(font, message, color);
-        if(surface == NULL) { SDL_DestroyRenderer(renderer); SDL_DestroyWindow(window); TTF_ExitWithError("TTF_LoadText"); }
-
-    //Creation texture
+    //Chargement surface & Creation texture
+    surface = TTF_RenderText_Solid(font, buffer, color);
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface); 
-        if(texture == NULL) { SDL_DestroyRenderer(renderer); SDL_DestroyWindow(window); TTF_ExitWithError("TTF_LoadText"); }
+    if(texture == NULL || surface == NULL) { SDL_DestroyRenderer(renderer); SDL_DestroyWindow(window); TTF_ExitWithError("Chargement surface & Creation texture"); }
 
     return texture;
 }
 
-//blit
+//blit text
 void TTF_RenderTexture(SDL_Texture *texture, SDL_Renderer *renderer, SDL_Window *window, int x, int y)
 {
     SDL_Rect rectangle = {x, y, 0, 0};
 
-    //Chargement texture
-    if(SDL_QueryTexture(texture, NULL, NULL, &rectangle.w, &rectangle.h) != 0) { SDL_DestroyTexture(texture); SDL_DestroyRenderer(renderer); SDL_DestroyWindow(window); TTF_ExitWithError("TTF_RenderText"); }
-
-    //Afficher texture
-    if(SDL_RenderCopy(renderer, texture, NULL, &rectangle) != 0) { SDL_DestroyTexture(texture); SDL_DestroyRenderer(renderer); SDL_DestroyWindow(window); TTF_ExitWithError("TTF_RenderText"); }
-
-    return;
+    //Chargement & affichage de la texture (blit)
+    if(SDL_QueryTexture(texture, NULL, NULL, &rectangle.w, &rectangle.h) != 0 || SDL_RenderCopy(renderer, texture, NULL, &rectangle) != 0) 
+    { SDL_DestroyTexture(texture); SDL_DestroyRenderer(renderer); SDL_DestroyWindow(window); TTF_ExitWithError("Chargement & affichage de la texture (blit)"); }
 }
 
 void TTF_ExitWithError(const char *message)

@@ -1,5 +1,4 @@
 #include "game.h"
-//#include "map.h"
 
 void SDL_VersionUsed(void)
 {
@@ -13,8 +12,7 @@ void SDL_GameManager(void)
     App *app = NULL;
     Map *map = NULL;
     Player *joueur = NULL;
-    int score = 0;
-    char buffer[50];
+    int currentScore = 0, prevScore = 0;
     
     joueur = new_player("Buble Buble");
     joueur->score += 5;
@@ -49,6 +47,8 @@ void SDL_GameManager(void)
     int *Xs = &map->position->xscroll;
     int *Ys = &map->position->yscroll;
     int minX, minY, maxX, maxY;
+    char buffer[50];
+    //char *cBuf = buffer;
 
     while(*ptr)
     {
@@ -74,10 +74,16 @@ void SDL_GameManager(void)
                     SDL_RenderTexture(texture_brick, app, j*SQUARE_SIZE - *Xs, i*SQUARE_SIZE - *Ys); //scroll à appliquer
 
         /* ------ RECHERCHE A PROPOS DE TTF SDL ------- */
-        score = 100;
-        sprintf(buffer, "SCORE: %d", score);
-        text = TTF_LoadTexture(font, buffer, color, app->renderer, app->window);
-        TTF_RenderTexture(text, app->renderer, app->window, 0, 0);
+        currentScore = 100;
+        if(currentScore != prevScore)
+        {
+            sprintf(buffer, "SCORE: %d", currentScore);
+            text = TTF_LoadTexture(buffer, font, color, app->renderer, app->window);
+            prevScore = currentScore;
+            printf("Une seule fois : %d\n", prevScore);
+        }
+        else
+            TTF_RenderTexture(text, app->renderer, app->window, 0, 50);
         /* -------------------------------------------- */
 
         // Gestion rendus
@@ -138,8 +144,9 @@ App *SDL_InitGame(void)
 //load texture
 SDL_Texture *SDL_LoadTexture(char *filename, App *app)
 {
-    SDL_Texture *texture = NULL;
     SDL_Surface *surface = NULL;
+    SDL_Texture *texture = NULL;
+
     //Chargement surface
     surface = IMG_Load(filename);
     if(surface == NULL)
