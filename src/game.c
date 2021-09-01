@@ -84,7 +84,7 @@ void SDL_GameManager(void)
         TTF_RenderTexture(text, app->renderer, app->window, 0, 50);
         /* -------------------------------------------- */
 
-        //printDatasToTheConsole(map, joueur);
+        printDatasToTheConsole(map, joueur);
 
         // Gestion rendus
         SDL_RenderPresent(app->renderer);
@@ -102,7 +102,7 @@ void SDL_GameManager(void)
 
 void printDatasToTheConsole(Map *map, Player *joueur)
 {
-    system("CLS");
+    //system("CLS");
     printf("Informations de développement\n-----------------------------\n");
     printf("Position joueur : (%d,%d)\n", joueur->position->X, joueur->position->Y);
     printf("Macro pour la taille de l'espace de jeu (modifiables)\n");
