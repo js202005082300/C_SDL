@@ -1,6 +1,5 @@
 #include "map.h"
 
-
 void MapManager(void)
 {
 	/*
@@ -104,6 +103,10 @@ MapPos *InitMapPos(void)
 
 	mapP->xscroll = 0;
 	mapP->yscroll = 0;
+	mapP->minX = 0;
+	mapP->minY = 0;
+	mapP->maxX = 0;
+	mapP->maxY = 0;
 	return mapP;
 }
 
