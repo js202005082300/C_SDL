@@ -22,7 +22,7 @@ typedef struct Position {
 typedef struct Player
 {
 	char *name;
-	unsigned int score;
+	int score;
 	Position *position;
 }Player;
 

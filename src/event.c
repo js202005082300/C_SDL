@@ -49,6 +49,8 @@ void SDL_DoInput(SDL_bool *program_launched, int *x, int *y)
                 break;
         }
     }
+    // system("CLS");
+    // printf("(%d,%d)\n", *x, *y);
 }
 
 /*------------------------------------------------------------------------------------------------*/
@@ -56,7 +58,6 @@ void SDL_DoInput(SDL_bool *program_launched, int *x, int *y)
 void moveUp(int *y)
 {
     *y -= SPEED_PLAYER;
-    //printf("(%d,%d)\n", *x, *y);
 }
 
 /*------------------------------------------------------------------------------------------------*/
@@ -64,7 +65,6 @@ void moveUp(int *y)
 void moveDown(int *y)
 {
     *y += SPEED_PLAYER;
-    //printf("(%d,%d)\n", *x, *y);
 }
 
 /*------------------------------------------------------------------------------------------------*/
@@ -72,7 +72,6 @@ void moveDown(int *y)
 void moveLeft(int *x)
 {
     *x -= SPEED_PLAYER;
-    //printf("(%d,%d)\n", *x, *y);
 }
 
 /*------------------------------------------------------------------------------------------------*/
@@ -80,5 +79,4 @@ void moveLeft(int *x)
 void moveRight(int *x)
 {
     *x += SPEED_PLAYER;
-    //printf("(%d,%d)\n", *x, *y);
 }

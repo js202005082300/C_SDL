@@ -90,8 +90,6 @@ void SDL_GameManager(void)
         SDL_RenderPresent(app->renderer);
     }
 
-
-
     // Clean up
     TTF_CleanTextRessources(text, font);
     SDL_CleanRessources(NULL, NULL, texture_brick);
@@ -105,9 +103,9 @@ void printDatasToTheConsole(Map *map, Player *joueur)
     //system("CLS");
     printf("Informations de développement\n-----------------------------\n");
     printf("Position joueur : (%d,%d)\n", joueur->position->X, joueur->position->Y);
-    printf("Macro pour la taille de l'espace de jeu (modifiables)\n");
+    printf("# Macros pour la taille de l'espace de jeu (modifiables)\n");
     printf("WINDOW_WIDTH : %d\nWINDOW_HEIGHT : %d\nSQUARE_SIZE : %d\n", WINDOW_WIDTH, WINDOW_HEIGHT, SQUARE_SIZE);
-    printf("Données de matrice\n");
+    printf("# Données de matrice\n");
     printf("Nombre colonnes : %d | Nombre lignes : %d\n", map->size->columns, map->size->rows);
     printf("Décallage xscroll : %d | yscroll : %d\n", map->position->xscroll, map->position->yscroll);
     printf("min X : %d | min Y : %d | max X : %d | max Y : %d\n", map->position->minX, map->position->minY, map->position->maxX, map->position->maxY);
