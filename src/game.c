@@ -42,8 +42,8 @@ void SDL_GameManager(void)
     // Evenement
     SDL_bool program_launched = SDL_TRUE; 
     SDL_bool *ptr = &program_launched;
-    int *X = &joueur->position->X;
-    int *Y = &joueur->position->Y;
+    int *X = &joueur->position->X; int prevX = joueur->position->X;
+    int *Y = &joueur->position->Y; int prevY = joueur->position->Y;
     int *Xs = &map->position->xscroll;
     int *Ys = &map->position->yscroll;
   
@@ -84,7 +84,7 @@ void SDL_GameManager(void)
         TTF_RenderTexture(text, app->renderer, app->window, 0, 50);
         /* -------------------------------------------- */
 
-        //printDatasToTheConsole(map, joueur);
+        if(*X != prevX || *Y != prevY){printDatasToTheConsole(map, joueur);prevX = *X;prevY = *Y;}
 
         // Gestion rendus
         SDL_RenderPresent(app->renderer);
@@ -100,12 +100,12 @@ void SDL_GameManager(void)
 
 void printDatasToTheConsole(Map *map, Player *joueur)
 {
-    //system("CLS");
-    printf("Informations de développement\n-----------------------------\n");
+    system("CLS");
+    //  Informations de développemen
     printf("Position joueur : (%d,%d)\n", joueur->position->X, joueur->position->Y);
-    printf("# Macros pour la taille de l'espace de jeu (modifiables)\n");
+    //  Macros pour la taille de l'espace de jeu (modifiables)
     printf("WINDOW_WIDTH : %d\nWINDOW_HEIGHT : %d\nSQUARE_SIZE : %d\n", WINDOW_WIDTH, WINDOW_HEIGHT, SQUARE_SIZE);
-    printf("# Données de matrice\n");
+    //  Données de matrice
     printf("Nombre colonnes : %d | Nombre lignes : %d\n", map->size->columns, map->size->rows);
     printf("Décallage xscroll : %d | yscroll : %d\n", map->position->xscroll, map->position->yscroll);
     printf("min X : %d | min Y : %d | max X : %d | max Y : %d\n", map->position->minX, map->position->minY, map->position->maxX, map->position->maxY);
