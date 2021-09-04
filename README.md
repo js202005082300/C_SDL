@@ -13,5 +13,6 @@
 + [X] Scrooling
 + [X] TTF : dessiner texte
 + [X] Aide pour le développeur : fonction d'affichage de données
-+ [ ] Collision
++ [X] Collision bords
++ [ ] Collision blocks
 + [ ] Saut et gravité

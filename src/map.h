@@ -30,9 +30,9 @@ typedef struct MapPos
 // Definition de MapSize
 typedef struct MapSize
 {
-	unsigned int rows;
-	unsigned int columns;
-	unsigned int nb_block;
+	int rows;
+	int columns;
+	int nb_block;
 }MapSize;
 
 // Definition d'une carte

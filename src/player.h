@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define PLAYER_SIZE 100
+#define SPEED_PLAYER 10
+
 // Type booléen
 typedef enum
 {

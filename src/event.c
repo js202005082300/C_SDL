@@ -1,6 +1,6 @@
 #include "event.h"
 
-void SDL_DoInput(SDL_bool *program_launched, int *x, int *y)
+void SDL_DoInput(SDL_bool *program_launched, int *x, int *y, const int MapLimitX, const int MapLimitY)
 {
     SDL_Event event;
     
@@ -15,13 +15,13 @@ void SDL_DoInput(SDL_bool *program_launched, int *x, int *y)
                         moveUp(y);
                         continue;
                     case SDLK_DOWN:
-                        moveDown(y);
+                        moveDown(y, MapLimitY);
                         continue;
                     case SDLK_LEFT:
                         moveLeft(x);
                         continue;
                     case SDLK_RIGHT:
-                        moveRight(x);
+                        moveRight(x, MapLimitX);
                         continue;
                     case SDLK_b:
                         continue;
@@ -49,34 +49,44 @@ void SDL_DoInput(SDL_bool *program_launched, int *x, int *y)
                 break;
         }
     }
-    // system("CLS");
-    // printf("(%d,%d)\n", *x, *y);
 }
 
 /*------------------------------------------------------------------------------------------------*/
 
 void moveUp(int *y)
 {
-    *y -= SPEED_PLAYER;
+    if(*y > SPEED_PLAYER)
+        *y -= SPEED_PLAYER;
+    else
+        *y = 0;
 }
 
 /*------------------------------------------------------------------------------------------------*/
 
-void moveDown(int *y)
+void moveDown(int *y, const int MapLimitY)
 {
-    *y += SPEED_PLAYER;
+    if(*y < MapLimitY - SPEED_PLAYER)
+        *y += SPEED_PLAYER;
+    else
+        *y = MapLimitY;
 }
 
 /*------------------------------------------------------------------------------------------------*/
 
 void moveLeft(int *x)
 {
-    *x -= SPEED_PLAYER;
+    if(*x > SPEED_PLAYER)
+        *x -= SPEED_PLAYER;
+    else
+        *x = 0;
 }
 
 /*------------------------------------------------------------------------------------------------*/
 
-void moveRight(int *x)
+void moveRight(int *x, const int MapLimitX)
 {
-    *x += SPEED_PLAYER;
+    if(*x < MapLimitX - SPEED_PLAYER)
+        *x += SPEED_PLAYER;
+    else
+        *x = MapLimitX;
 }
