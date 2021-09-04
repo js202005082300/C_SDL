@@ -14,7 +14,7 @@ void SDL_GameManager(void)
     Player *joueur = NULL;
     int currentScore = 0, prevScore = 0;
     
-    joueur = new_player("Buble Buble");
+    joueur = new_player("Samuel Jacquet");
     joueur->score += 5;
     joueur->position->X += 3;
     joueur->position->Y += 6;
