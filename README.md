@@ -14,7 +14,7 @@
 + [X] TTF : dessiner texte
 + [X] Aide pour le développeur : fonction d'affichage de données
 + [X] Collision bords
-+ [ ] Compilation sur Linux
++ [X] Compilation et exécution sur Linux
 + [ ] Débogage avec Valgrind
 + [ ] Collision blocks
 + [ ] Saut et gravité
