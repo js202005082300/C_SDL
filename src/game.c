@@ -105,7 +105,14 @@ void SDL_GameManager(void)
 
 void printDatasToTheConsole(Map *map, Player *joueur)
 {
-    system("CLS");
+    #ifdef _WIN32
+        system("CLS");
+    #elif __linux__
+        system("CLEAR");
+    #else
+        #error "OS non supporte !"
+    #endif
+
     //  Informations de développemen
     printf("Position joueur : (%d,%d)\n", joueur->position->X, joueur->position->Y);
     //  Macros pour la taille de l'espace de jeu (modifiables)
