@@ -15,4 +15,5 @@
 + [X] Aide pour le développeur : fonction d'affichage de données
 + [X] Collision bords
 + [ ] Collision blocks
++ [ ] Compilation sur Linux
 + [ ] Saut et gravité

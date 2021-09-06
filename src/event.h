@@ -5,12 +5,13 @@
 #include <stdio.h>
 
 #include "player.h"
+#include "map.h"
 
 //	Prototypes des fonctions
-void SDL_DoInput(SDL_bool *program_launched, int *x, int *y, const int MapLimitX, const int MapLimitY);
-void moveUp(int *y);
-void moveDown(int *y, const int MapLimitY);
-void moveLeft(int *x);
-void moveRight(int *x, const int MapLimitX);
+void SDL_DoInput(SDL_bool *program_launched, int *PosPlayerX, int *PosPlayerY, const int MapLimitX, const int MapLimitY, int **matrix);
+void moveUp(int *PosPlayerX, int *PosPlayerY, int **matrix);
+void moveDown(int *PosPlayerX, int *PosPlayerY, int **matrix, const int MapLimitY);
+void moveLeft(int *PosPlayerX, int *PosPlayerY, int **matrix);
+void moveRight(int *PosPlayerX, int *PosPlayerY, int **matrix, const int MapLimitX);
 
 #endif

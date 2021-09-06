@@ -19,6 +19,9 @@ $(EXEC) : $(OBJ)
 #clean:
 #	del /q /f test.txt
 
+debug:
+	gdb -q $(EXEC)
+
 test:
 	gcc test.c -o bin/prog -I include -Wall -Wextra -Werror -std=c11 -pedantic-errors -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
 

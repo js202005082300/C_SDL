@@ -1,6 +1,6 @@
 #include "event.h"
 
-void SDL_DoInput(SDL_bool *program_launched, int *x, int *y, const int MapLimitX, const int MapLimitY)
+void SDL_DoInput(SDL_bool *program_launched, int *PosPlayerX, int *PosPlayerY, const int MapLimitX, const int MapLimitY, int **matrix)
 {
     SDL_Event event;
     
@@ -12,16 +12,16 @@ void SDL_DoInput(SDL_bool *program_launched, int *x, int *y, const int MapLimitX
                 switch(event.key.keysym.sym)
                 {
                     case SDLK_UP:
-                        moveUp(y);
+                        moveUp(PosPlayerX, PosPlayerY, matrix);
                         continue;
                     case SDLK_DOWN:
-                        moveDown(y, MapLimitY);
+                        moveDown(PosPlayerX, PosPlayerY, matrix, MapLimitY);
                         continue;
                     case SDLK_LEFT:
-                        moveLeft(x);
+                        moveLeft(PosPlayerX, PosPlayerY, matrix);
                         continue;
                     case SDLK_RIGHT:
-                        moveRight(x, MapLimitX);
+                        moveRight(PosPlayerX, PosPlayerY, matrix, MapLimitX);
                         continue;
                     case SDLK_b:
                         continue;
@@ -53,40 +53,46 @@ void SDL_DoInput(SDL_bool *program_launched, int *x, int *y, const int MapLimitX
 
 /*------------------------------------------------------------------------------------------------*/
 
-void moveUp(int *y)
-{
-    if(*y > SPEED_PLAYER)
-        *y -= SPEED_PLAYER;
+void moveUp(int *PosPlayerX, int *PosPlayerY, int **matrix)
+{    
+    for(int i = 0 ; i < SPEED_PLAYER ; i++)
+        if(matrix[*PosPlayerY/SQUARE_SIZE - i/SQUARE_SIZE][*PosPlayerX/SQUARE_SIZE] == '1')
+        {
+            return;
+        }
+
+    if(*PosPlayerY > SPEED_PLAYER)
+        *PosPlayerY -= SPEED_PLAYER;
     else
-        *y = 0;
+        *PosPlayerY = 0;
 }
 
 /*------------------------------------------------------------------------------------------------*/
 
-void moveDown(int *y, const int MapLimitY)
+void moveDown(int *PosPlayerX, int *PosPlayerY, int **matrix, const int MapLimitY)
 {
-    if(*y < MapLimitY - SPEED_PLAYER)
-        *y += SPEED_PLAYER;
+    if(*PosPlayerY < MapLimitY - SPEED_PLAYER)
+        *PosPlayerY += SPEED_PLAYER;
     else
-        *y = MapLimitY;
+        *PosPlayerY = MapLimitY;
 }
 
 /*------------------------------------------------------------------------------------------------*/
 
-void moveLeft(int *x)
+void moveLeft(int *PosPlayerX, int *PosPlayerY, int **matrix)
 {
-    if(*x > SPEED_PLAYER)
-        *x -= SPEED_PLAYER;
+    if(*PosPlayerX > SPEED_PLAYER)
+        *PosPlayerX -= SPEED_PLAYER;
     else
-        *x = 0;
+        *PosPlayerX = 0;
 }
 
 /*------------------------------------------------------------------------------------------------*/
 
-void moveRight(int *x, const int MapLimitX)
+void moveRight(int *PosPlayerX, int *PosPlayerY, int **matrix, const int MapLimitX)
 {
-    if(*x < MapLimitX - SPEED_PLAYER)
-        *x += SPEED_PLAYER;
+    if(*PosPlayerX < MapLimitX - SPEED_PLAYER)
+        *PosPlayerX += SPEED_PLAYER;
     else
-        *x = MapLimitX;
+        *PosPlayerX = MapLimitX;
 }

@@ -42,8 +42,8 @@ void SDL_GameManager(void)
     // Evenement
     SDL_bool program_launched = SDL_TRUE; 
     SDL_bool *ptr = &program_launched;
-    int *X = &joueur->position->X; int prevX = joueur->position->X;
-    int *Y = &joueur->position->Y; int prevY = joueur->position->Y;
+    int *PosPlayerX = &joueur->position->X; int prevX = joueur->position->X; //données développement
+    int *PosPlayerY = &joueur->position->Y; int prevY = joueur->position->Y; //données développement
     int *Xs = &map->position->xscroll;
     int *Ys = &map->position->yscroll;
     const int MapLimitX = map->size->columns * SQUARE_SIZE - PLAYER_SIZE;
@@ -55,11 +55,11 @@ void SDL_GameManager(void)
     while(*ptr)
     {
         // Entrée au clavier
-        SDL_DoInput(ptr, X, Y, MapLimitX, MapLimitY);
+        SDL_DoInput(ptr, PosPlayerX, PosPlayerY, MapLimitX, MapLimitY, map->matrix);
 
         /* ------ RECHERCHE A PROPOS DU SCROLL -------- */
-        *Xs = *X + 50 - WINDOW_WIDTH/2;     if(*Xs<0){ *Xs=0; } if(*Xs>map->size->columns*SQUARE_SIZE - WINDOW_WIDTH){ *Xs=map->size->columns*SQUARE_SIZE - WINDOW_WIDTH; }
-        *Ys = *Y + 50 - WINDOW_HEIGHT/2;    if(*Ys<0){ *Ys=0; } if(*Ys>map->size->rows*SQUARE_SIZE - WINDOW_HEIGHT){ *Ys=map->size->rows*SQUARE_SIZE - WINDOW_HEIGHT; }
+        *Xs = *PosPlayerX + 50 - WINDOW_WIDTH/2;     if(*Xs<0){ *Xs=0; } if(*Xs>map->size->columns*SQUARE_SIZE - WINDOW_WIDTH){ *Xs=map->size->columns*SQUARE_SIZE - WINDOW_WIDTH; }
+        *Ys = *PosPlayerY + 50 - WINDOW_HEIGHT/2;    if(*Ys<0){ *Ys=0; } if(*Ys>map->size->rows*SQUARE_SIZE - WINDOW_HEIGHT){ *Ys=map->size->rows*SQUARE_SIZE - WINDOW_HEIGHT; }
 
         map->position->minX=*Xs / SQUARE_SIZE;
         map->position->minY=*Ys / SQUARE_SIZE;
@@ -69,7 +69,7 @@ void SDL_GameManager(void)
 
         /* -------- AFFICHER L'ESPACE DE JEU ---------- */
         SDL_RenderTexture(texture_background, app->renderer, app->window, 0 - *Xs, 0 - *Ys); //scroll à appliquer
-        SDL_RenderTexture(texture_player, app->renderer, app->window, *X - *Xs, *Y - *Ys); //scroll à appliquer
+        SDL_RenderTexture(texture_player, app->renderer, app->window, *PosPlayerX - *Xs, *PosPlayerY - *Ys); //scroll à appliquer
         for(int i=map->position->minY ; i < map->position->maxY ; i++)
             for(int j=map->position->minX ; j < map->position->maxX ; j++)
                 if(map->matrix[i][j] == '1')
@@ -88,17 +88,8 @@ void SDL_GameManager(void)
         /* -------------------------------------------- */
 
         /* ----- INFORMATIONS POUR LE DÉVELOPPEUR ----- */
-        if(*X != prevX || *Y != prevY){printDatasToTheConsole(map, joueur);prevX = *X;prevY = *Y;}
+        if(*PosPlayerX != prevX || *PosPlayerY != prevY){printDatasToTheConsole(map, joueur);prevX = *PosPlayerX;prevY = *PosPlayerY;}
         /* -------------------------------------------- */
-
-        /* ---- RECHERCHE A PROPOS DE LA COLLISION ---- */
-        //if(*X <= 0){*X = 0;} if(*X >= map->size->columns*SQUARE_SIZE - PLAYER_SIZE){*X = map->size->columns*SQUARE_SIZE - PLAYER_SIZE;}
-        //if(*Y <= 0){*Y = 0;} if(*Y >= map->size->rows*SQUARE_SIZE - PLAYER_SIZE){*Y = map->size->rows*SQUARE_SIZE - PLAYER_SIZE;}
-
-        //if(map->matrix[*Y/10][*X/10] == '1'){*Y-=SPEED_PLAYER; *X-=SPEED_PLAYER;}
-        //if(map->matrix[*Y/10 + PLAYER_SIZE][*X/10 + PLAYER_SIZE] == '1'){*Y-=SPEED_PLAYER + PLAYER_SIZE; *X-=SPEED_PLAYER + PLAYER_SIZE;}
-        /* -------------------------------------------- */
-
 
         // Gestion rendus
         SDL_RenderPresent(app->renderer);
@@ -123,6 +114,5 @@ void printDatasToTheConsole(Map *map, Player *joueur)
     printf("Nombre colonnes : %d | Nombre lignes : %d\n", map->size->columns, map->size->rows);
     printf("Decallage xscroll : %d | yscroll : %d\n", map->position->xscroll, map->position->yscroll);
     printf("min X : %d | min Y : %d | max X : %d | max Y : %d\n", map->position->minX, map->position->minY, map->position->maxX, map->position->maxY);
-    printf("Position tableau : (%d,%d)\n", joueur->position->X/10, joueur->position->Y/10);
-    printf("Valeur matrice : %c\n", map->matrix[joueur->position->Y/10][joueur->position->X/10]);
+    printf("Position matrice : (%d,%d) | Valeur : %c\n", joueur->position->X/SQUARE_SIZE, joueur->position->Y/SQUARE_SIZE, map->matrix[joueur->position->Y/SQUARE_SIZE][joueur->position->X/SQUARE_SIZE]);
 }
