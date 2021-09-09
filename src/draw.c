@@ -1,48 +1,52 @@
 #include "draw.h"
 
-//load texture
-SDL_Texture *SDL_LoadTexture(char *filename, SDL_Renderer *renderer, SDL_Window *window)
+void prepareScene(App *app)
+{
+	SDL_SetRenderDrawColor(app->renderer, 96, 128, 255, 255);
+	SDL_RenderClear(app->renderer);
+}
+
+void presentScene(SDL_Renderer *renderer)
+{
+	SDL_RenderPresent(renderer);
+}
+
+SDL_Texture *loadTexture(SDL_Renderer *renderer, SDL_Window *window, char *filename)
 {
     SDL_Surface *surface = NULL;
     SDL_Texture *texture = NULL;
+
+	SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Loading %s", filename);
 
     //Chargement surface
     surface = IMG_Load(filename);
     if(surface == NULL)
     {
-        SDL_CleanRessources(window, renderer, NULL);
+		SDL_DestroyRenderer(renderer);
+		SDL_DestroyWindow(window);
         SDL_ExitWithError("Chargement image echouee");
     }
+
     //Creation texture
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
     if(texture == NULL)
     {
-        SDL_CleanRessources(window, renderer, NULL);
+		SDL_DestroyRenderer(renderer);
+		SDL_DestroyWindow(window);
         SDL_ExitWithError("Creation texture echouee");
     }
 
-    return texture;
+	return texture;
 }
 
-//blit
-void SDL_RenderTexture(SDL_Texture *texture, SDL_Renderer *renderer, SDL_Window *window, int x, int y)
+void blit(SDL_Renderer *renderer, SDL_Texture *texture, int *x, int *y)
 {
-    SDL_Rect rectangle = {x, y};
+	SDL_Rect dest;
 
-    //Chargement texture
-    if(SDL_QueryTexture(texture, NULL, NULL, &rectangle.w, &rectangle.h) != 0)
-    {
-        SDL_CleanRessources(window, renderer, texture);
-        SDL_ExitWithError("Impossible de charger la texture");
-    }
+	dest.x = *x;
+	dest.y = *y;
+	SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
 
-    //Afficher texture
-    if(SDL_RenderCopy(renderer, texture, NULL, &rectangle) != 0)
-    {
-        SDL_CleanRessources(window, renderer, texture);
-        SDL_ExitWithError("Impossible d'afficher la texture");
-    }
-
-    return;
+	SDL_RenderCopy(renderer, texture, NULL, &dest);
 }

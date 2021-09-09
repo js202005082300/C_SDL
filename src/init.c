@@ -1,60 +1,55 @@
 #include "init.h"
 
-App *SDL_InitGame(void)
+App *initSDL(void)
 {
     App *app = malloc(sizeof(*app));
     app->window = malloc(sizeof(app->window));
     app->renderer = malloc(sizeof(app->renderer));
 
     if(app == NULL || app->window == NULL || app->renderer == NULL)
-        exit(EXIT_FAILURE);
+    { exit(EXIT_FAILURE); }
 
-    //Lancement SDL
     if(SDL_Init(SDL_INIT_VIDEO)!=0)
-        SDL_ExitWithError("Initialisation SDL echouee");
-
-    //Lancement SDL_TTF
-    TTF_InitText();
-
-    //Creation fenetre
-    app->window = SDL_CreateWindow("Jeu C/SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
-    if(app->window == NULL)
-        SDL_ExitWithError("Creation fenetre echouee");
-
-    //Creation rendu
-    app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_SOFTWARE);
-    if(app->renderer == NULL)
     {
-        SDL_CleanRessources(app->window, NULL, NULL);
-        SDL_ExitWithError("Creation rendu echouee");
+        SDL_ExitWithError("Initialisation SDL echouee");
     }
+
+    int flags = IMG_INIT_PNG | IMG_INIT_JPG;
+    if(IMG_Init(flags) != flags)
+    {
+        printf("IMG_Init: %s\n", IMG_GetError());
+    }
+
+    app->window = SDL_CreateWindow("Jeu C/SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+    if(app->window == NULL)
+    {
+        SDL_ExitWithError("Creation fenetre echouee");
+    }
+
+	app->renderer = SDL_CreateRenderer(app->window, -1, SDL_RENDERER_SOFTWARE);
+
+	if (!app->renderer)
+	{
+		printf("Failed to create renderer: %s\n", SDL_GetError());
+		exit(1);
+	}
 
     return app;
 }
 
+void freeSDL(App *app)
+{
+	free(app->window);
+	free(app->renderer);
+	free(app);
+
+    IMG_Quit();
+	SDL_Quit();
+}
+
 void SDL_ExitWithError(const char *message)
 {
-    SDL_Log("ERREUR : %s > %s\n", message, SDL_GetError());
+    SDL_Log("Erreur : %s : %s\n", message, SDL_GetError());
     SDL_Quit();
     exit(EXIT_FAILURE);
-}
-
-void SDL_CleanRessources(SDL_Window *w, SDL_Renderer *r, SDL_Texture *t)
-{
-    if(t != NULL)
-        SDL_DestroyTexture(t);
-
-    if(r != NULL)
-        SDL_DestroyRenderer(r);
-
-    if(w != NULL)
-        SDL_DestroyWindow(w);
-
-    SDL_Quit();
-}
-
-void SDL_FreeGame(App *app)
-{
-    if(app != NULL)
-        free(app);
 }
