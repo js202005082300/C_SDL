@@ -24,19 +24,6 @@ void test(Entity *bullet, SDL_Renderer *renderer, SDL_Texture **textures)
 	}
 }
 
-void print(Entity *bullet)
-{
-	int i = 0;
-	while(bullet != NULL)
-	{
-		printf("%d ", i);
-
-		i++;
-		bullet = bullet->next;
-	}
-	printf("\n");
-}
-
 int main(int argc, char *argv[])
 {
 	App *app = NULL;
@@ -71,14 +58,10 @@ int main(int argc, char *argv[])
 		SDL_Delay(16);
 	}
 
-	print(bullet);
-
 	freeTextures(textures);
 	freeEntity(player);
 	freeEntity(bullet);
 	freeSDL(app);
-
-	//print(bullet);
 
 	printf("Fin programme\n");
 
