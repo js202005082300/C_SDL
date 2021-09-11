@@ -1,6 +1,6 @@
 #include "input.h"
 
-void doInput(int *player_x, int *player_y, Entity *bullet)
+void doInput(SDL_bool *program_launched, SDL_bool *b_pressed, int *player_x, int *player_y)
 {
 	SDL_Event event;
 
@@ -24,14 +24,14 @@ void doInput(int *player_x, int *player_y, Entity *bullet)
                         moveRight(player_x);
                         continue;
                     case SDLK_b:
-						loadBullet(player_x, player_y, bullet);
+						*b_pressed = SDL_TRUE;
                         continue;
                     
                     default:
                         continue;
                 }
 			case SDL_QUIT:
-				exit(0);
+				*program_launched = SDL_FALSE;
 				break;
 
 			default:
@@ -40,55 +40,32 @@ void doInput(int *player_x, int *player_y, Entity *bullet)
 	}
 }
 
-/* ------------------------------------------------------------ */
+/* ----------------------------------------- */
 
 void moveUp(int *player_y)
 {    
     *player_y -= PLAYER_SPEED;
 }
 
-/* ------------------------------------------------------------ */
+/* ----------------------------------------- */
 
 void moveDown(int *player_y)
 {
     *player_y += PLAYER_SPEED;
 }
 
-/* ------------------------------------------------------------ */
+/* ----------------------------------------- */
 
 void moveLeft(int *player_x)
 {
     *player_x -= PLAYER_SPEED;
 }
 
-/* ------------------------------------------------------------ */
+/* ----------------------------------------- */
 
 void moveRight(int *player_x)
 {
     *player_x += PLAYER_SPEED;
 }
 
-/* ------------------------------------------------------------ */
-
-void loadBullet(int *player_x, int *player_y, Entity *bullet)
-{
-	if (bullet->health == 0)
-	{
-		bullet->x = *player_x;
-		bullet->y = *player_y;
-		bullet->dx = 16;
-		bullet->dy = 0;
-		bullet->health = 1;
-	}
-}
-
-void moveBullet(Entity *bullet)
-{
-	bullet->x += bullet->dx;
-	bullet->y += bullet->dy;
-
-	if (bullet->x > SCREEN_WIDTH)
-	{
-		bullet->health = 0;
-	}
-}
+/* ----------------------------------------- */

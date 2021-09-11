@@ -3,18 +3,27 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#include "draw.h"
+typedef struct str_entity Entity;
 
-typedef struct {
+struct str_entity {
 	int x, y;
 	int dx, dy, health;
-	SDL_Texture *texture;
-} Entity;
+	int reload;
+	int texID;
+	Entity *next;
+};
 
 Entity *initEntity(void);
-Entity *initPlayer(SDL_Renderer *renderer, SDL_Window *window);
-Entity *initBullet(SDL_Renderer *renderer, SDL_Window *window);
+
+Entity *initPlayer(void);
+Entity *initBullet(Entity *entity, int *entity_x, int *entity_y);
+
+Entity *popFrontList(Entity *entity);
+
+void drawListBullet(void);
 void freeEntity(Entity *entity);
 
 #endif

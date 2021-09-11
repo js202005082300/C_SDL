@@ -14,12 +14,6 @@ App *initSDL(void)
         SDL_ExitWithError("Initialisation SDL echouee");
     }
 
-    int flags = IMG_INIT_PNG | IMG_INIT_JPG;
-    if(IMG_Init(flags) != flags)
-    {
-        printf("IMG_Init: %s\n", IMG_GetError());
-    }
-
     app->window = SDL_CreateWindow("Jeu C/SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
     if(app->window == NULL)
     {
@@ -39,11 +33,10 @@ App *initSDL(void)
 
 void freeSDL(App *app)
 {
-	free(app->window);
-	free(app->renderer);
+    SDL_DestroyRenderer(app->renderer);
+    SDL_DestroyWindow(app->window);
 	free(app);
 
-    IMG_Quit();
 	SDL_Quit();
 }
 

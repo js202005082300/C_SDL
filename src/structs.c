@@ -4,38 +4,67 @@ Entity *initEntity(void)
 {
     Entity *entity = NULL;
     entity = malloc(sizeof(*entity));
-    entity->texture = malloc(sizeof(entity->texture));
+
+    entity->next = NULL;
 
     return entity;
 }
 
-Entity *initPlayer(SDL_Renderer *renderer, SDL_Window *window)
+/* ----------------------------------------- */
+
+Entity *initPlayer(void)
 {
     Entity *player = initEntity();
 
     player->x = 10;
     player->y = 10;
-    player->texture = loadTexture(renderer, window, "src/gfx/ship-100.png");
+    player->texID = 0;
 
     return player;
 }
 
-Entity *initBullet(SDL_Renderer *renderer, SDL_Window *window)
+/* ----------------------------------------- */
+
+Entity *initBullet(Entity *entity, int *entity_x, int *entity_y)
 {
     Entity *bullet = initEntity();
 
-    bullet->x = 10;
-    bullet->y = 10;
-    bullet->texture = loadTexture(renderer, window, "src/gfx/bullet-10.png");
+    bullet->x = *entity_x;
+    bullet->y = *entity_y;
+    bullet->dx = 16;
+    bullet->dy = 0;
+    bullet->health = 1;
+    bullet->texID = 1;
+
+    bullet->next = entity;
 
     return bullet;
 }
 
+
+/* ----------------------------------------- */
+
+void drawListBullet(void)
+{
+
+}
+
+/* ----------------------------------------- */
+
 void freeEntity(Entity *entity)
 {
-    free(entity->texture);
-    entity->texture = NULL;
-
+    while(entity != NULL)
+    {
+        entity = popFrontList(entity);
+    }
     free(entity);
     entity = NULL;
+}
+
+Entity *popFrontList(Entity *entity)
+{
+    Entity *tmp = initEntity();
+    tmp = entity->next;
+    free(entity);
+    return tmp;
 }
