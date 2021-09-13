@@ -3,27 +3,6 @@
 #include "input.h"
 #include "structs.h"
 
-void test(Entity *bullet, SDL_Renderer *renderer, SDL_Texture **textures)
-{
-	while(bullet != NULL)
-	{
-		if(bullet->health > 0)
-		{
-			bullet->x += bullet->dx;
-			bullet->y += bullet->dy;
-
-			blit(renderer, textures[bullet->texID], &bullet->x, &bullet->y);
-
-			if(bullet->x > SCREEN_WIDTH)
-			{
-				bullet->health = 0;
-			}
-		}
-		
-		bullet = bullet->next;
-	}
-}
-
 int main(int argc, char *argv[])
 {
 	App *app = NULL;
@@ -51,7 +30,7 @@ int main(int argc, char *argv[])
 			bullet = initBullet(bullet, &player->x, &player->y);
 			b_pressed = SDL_FALSE;
 		}
-		test(bullet, app->renderer, textures);
+		drawBullet(bullet, app->renderer, textures);
 
 		presentScene(app->renderer);
 

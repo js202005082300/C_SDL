@@ -1,13 +1,5 @@
 #include "draw.h"
 
-SDL_Texture **tabTextures(SDL_Renderer *renderer, SDL_Window *window)
-{
-    SDL_Texture **tabTex = NULL;
-    return tabTex;
-}
-
-/* ------------------------------------------------ */
-
 void prepareScene(App *app)
 {
 	SDL_SetRenderDrawColor(app->renderer, 96, 128, 255, 255);
@@ -59,7 +51,6 @@ void blit(SDL_Renderer *renderer, SDL_Texture *texture, int *x, int *y)
 	dest.x = *x;
 	dest.y = *y;
 	SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
-
 	SDL_RenderCopy(renderer, texture, NULL, &dest);
 }
 
@@ -90,4 +81,27 @@ void freeTextures(SDL_Texture **texID)
     free(texID);
 
     texID = NULL;
+}
+
+/* ------------------------------------------------ */
+
+void drawBullet(Entity *bullet, SDL_Renderer *renderer, SDL_Texture **textures)
+{
+	while(bullet != NULL)
+	{
+		if(bullet->health > 0)
+		{
+			bullet->x += bullet->dx;
+			bullet->y += bullet->dy;
+
+			blit(renderer, textures[bullet->texID], &bullet->x, &bullet->y);
+
+			if(bullet->x > SCREEN_WIDTH)
+			{
+				bullet->health = 0;
+			}
+		}
+		
+		bullet = bullet->next;
+	}
 }
