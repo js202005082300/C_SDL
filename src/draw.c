@@ -66,8 +66,10 @@ SDL_Texture **initTextures(SDL_Renderer *renderer, SDL_Window *window)
       	exit(EXIT_FAILURE);
     }
 
-    texID[0] = loadTexture(renderer, window, SHIP);
+    texID[0] = loadTexture(renderer, window, BLUE_SHIP);
     texID[1] = loadTexture(renderer, window, BULLET);
+    texID[2] = loadTexture(renderer, window, RED_SHIP);
+
 
     return texID;
 }
@@ -84,6 +86,11 @@ void freeTextures(SDL_Texture **texID)
 }
 
 /* ------------------------------------------------ */
+
+void drawPlayer(Entity *player, SDL_Renderer *renderer, SDL_Texture **textures)
+{
+    blit(renderer, textures[player->texID], &player->x, &player->y);
+}
 
 void drawBullet(Entity *bullet, SDL_Renderer *renderer, SDL_Texture **textures)
 {
@@ -104,4 +111,20 @@ void drawBullet(Entity *bullet, SDL_Renderer *renderer, SDL_Texture **textures)
 		
 		bullet = bullet->next;
 	}
+}
+
+void drawEnemy(Entity *enemy, SDL_Renderer *renderer, SDL_Texture **textures)
+{
+    while(enemy != NULL)
+    {
+        if(enemy->health > 0)
+        {
+            enemy->x += enemy->dx;
+            enemy->y += enemy->dy;
+            
+            blit(renderer, textures[enemy->texID], &enemy->x, &enemy->y);
+        }
+
+        enemy = enemy->next;
+    }
 }

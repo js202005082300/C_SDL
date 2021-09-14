@@ -6,12 +6,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "init.h"
+#include "util.h"
+
 typedef struct str_entity Entity;
 
 struct str_entity {
-	int x, y;
-	int dx, dy, health;
-	int reload;
+	int x, y, dx, dy;
+	int health;
+	int side;
 	int texID;
 	Entity *next;
 };
@@ -19,11 +22,12 @@ struct str_entity {
 Entity *initEntity(void);
 
 Entity *initPlayer(void);
-Entity *initBullet(Entity *entity, int *entity_x, int *entity_y);
+Entity *initEnemy(Entity *entityList);
+Entity *initBullet(Entity *entityList, int *entity_x, int *entity_y);
 
-Entity *popFrontList(Entity *entity);
+Entity *popFrontList(Entity *entityList);
 
 void drawListBullet(void);
-void freeEntity(Entity *entity);
+void freeEntity(Entity *entityList);
 
 #endif

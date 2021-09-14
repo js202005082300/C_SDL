@@ -18,6 +18,7 @@ Entity *initPlayer(void)
 
     player->x = 10;
     player->y = 10;
+    player->side = SIDE_PLAYER;
     player->texID = 0;
 
     return player;
@@ -25,46 +26,58 @@ Entity *initPlayer(void)
 
 /* ----------------------------------------- */
 
-Entity *initBullet(Entity *entity, int *entity_x, int *entity_y)
+Entity *initEnemy(Entity *entityList)
+{
+    Entity *enemy = initEntity();
+
+    enemy->x = SCREEN_WIDTH;
+    enemy->y = rand() % SCREEN_HEIGHT;
+    enemy->dx = -(2 + (rand() % 4));
+    enemy->health = 100;
+    enemy->side = SIDE_ALIEN;
+    enemy->texID = 2;
+
+
+    enemy->next = entityList;
+
+    return enemy;
+}
+
+/* ----------------------------------------- */
+
+Entity *initBullet(Entity *entityList, int *entity_x, int *entity_y)
 {
     Entity *bullet = initEntity();
 
-    bullet->x = *entity_x;
-    bullet->y = *entity_y;
+    bullet->x = *entity_x + 20;
+    bullet->y = *entity_y + 16;
     bullet->dx = 16;
     bullet->dy = 0;
     bullet->health = 1;
+    bullet->side = SIDE_PLAYER;
     bullet->texID = 1;
 
-    bullet->next = entity;
+    bullet->next = entityList;
 
     return bullet;
 }
 
-
 /* ----------------------------------------- */
 
-void drawListBullet(void)
+void freeEntity(Entity *entityList)
 {
-
-}
-
-/* ----------------------------------------- */
-
-void freeEntity(Entity *entity)
-{
-    while(entity != NULL)
+    while(entityList != NULL)
     {
-        entity = popFrontList(entity);
+        entityList = popFrontList(entityList);
     }
-    free(entity);
-    entity = NULL;
+    free(entityList);
+    entityList = NULL;
 }
 
-Entity *popFrontList(Entity *entity)
+Entity *popFrontList(Entity *entityList)
 {
     Entity *tmp = initEntity();
-    tmp = entity->next;
-    free(entity);
+    tmp = entityList->next;
+    free(entityList);
     return tmp;
 }
