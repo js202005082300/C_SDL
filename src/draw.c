@@ -93,8 +93,9 @@ void drawPlayer(Entity *player, SDL_Renderer *renderer, SDL_Texture **textures)
 }
 
 void drawBullet(Entity *bullet, SDL_Renderer *renderer, SDL_Texture **textures)
-{
-	while(bullet != NULL)
+{   
+    
+    while(bullet != NULL)
 	{
 		if(bullet->health > 0)
 		{
@@ -127,4 +128,28 @@ void drawEnemy(Entity *enemy, SDL_Renderer *renderer, SDL_Texture **textures)
 
         enemy = enemy->next;
     }
+}
+
+int bulletHitFighter(Entity *bullet, Entity *enemy)
+{    
+    for(Entity *e = enemy; e != NULL; e = e->next)
+    {
+        for(Entity *b = bullet; b != NULL; b = b->next)
+        {
+            if(e->side != b->side && collision(b->x, b->y, b->w, b->h, e->x, e->y, e->w, e->h))
+            {
+                b->health = 0;
+                e->health = 0;
+
+                return 1;
+            }
+        }
+    }
+
+    return 0;
+}
+
+int collisionDecor()
+{
+    return 0;
 }

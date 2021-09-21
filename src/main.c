@@ -5,6 +5,19 @@
 
 static void capFrameRate(long *then, float *remainder);
 
+void printList(Entity *list)
+{
+	Entity *tmp = list;
+	
+	printf("==============\n");
+	while(tmp != NULL)
+	{
+		printf("%d ", tmp->health);
+		tmp = tmp->next;
+	}
+	printf("\n==============\n");
+}
+
 int main(int argc, char *argv[])
 {	
 	App *app = NULL;
@@ -36,6 +49,8 @@ int main(int argc, char *argv[])
 		{
 			bullet = initBullet(bullet, &player->x, &player->y);
 			b_pressed = SDL_FALSE;
+			bullet = freeDeadEntity(bullet, 0);
+			enemy = freeDeadEntity(enemy, 0);
 		}
 		drawBullet(bullet, app->renderer, textures);
 		/* ---- */
@@ -45,6 +60,8 @@ int main(int argc, char *argv[])
 			enemySpawnTimer = 30 + (rand() % 60);
 		}
 		drawEnemy(enemy, app->renderer, textures);
+		/* ---- */
+		bulletHitFighter(bullet, enemy);
 		/* ---- */
 		presentScene(app->renderer);
 		capFrameRate(&then, &remainder);//SDL_Delay(16);

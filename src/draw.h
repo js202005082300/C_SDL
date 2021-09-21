@@ -21,5 +21,6 @@ void drawPlayer(Entity *player, SDL_Renderer *renderer, SDL_Texture **textures);
 void drawBullet(Entity *bullet, SDL_Renderer *renderer, SDL_Texture **textures);
 void drawEnemy(Entity *enemy, SDL_Renderer *renderer, SDL_Texture **textures);
 
+int bulletHitFighter(Entity *bullet, Entity *enemy);
 
 #endif
