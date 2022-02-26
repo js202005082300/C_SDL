@@ -10,15 +10,18 @@
 [SDL2_ttf](http://www.libsdl.org/projects/SDL_ttf/)|2.0.15|x64
 
 ## ToDo
-<!-- + [X] Scrooling
++ [X] Scrooling
 + [X] TTF : dessiner texte
 + [X] Aide pour le développeur : fonction d'affichage de données
 + [X] Collision bords
 + [X] Compilation et exécution sur Linux
-+ [X] Débogage avec Valgrind -->
-+ [ ] https://www.parallelrealities.co.uk/tutorials/#atlas
++ [X] Débogage avec Valgrind
 
-Suite aux erreurs de compilation, on recommence.
+> -----------------
+> Autres tests
+> -----------------
+
++ [ ] https://www.parallelrealities.co.uk/tutorials/#atlas
 
 + [ ] Collision blocks
 + [ ] Saut et gravité
