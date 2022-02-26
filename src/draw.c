@@ -2,7 +2,7 @@
 
 void prepareScene(App *app)
 {
-	SDL_SetRenderDrawColor(app->renderer, 96, 128, 255, 255);
+	SDL_SetRenderDrawColor(app->renderer, 10, 10, 10, 255);
 	SDL_RenderClear(app->renderer);
 }
 
@@ -67,9 +67,9 @@ SDL_Texture **initTextures(SDL_Renderer *renderer, SDL_Window *window)
     }
 
     texID[0] = loadTexture(renderer, window, BLUE_SHIP);
-    texID[1] = loadTexture(renderer, window, BULLET);
+    texID[1] = loadTexture(renderer, window, BLUE_BULLET);
     texID[2] = loadTexture(renderer, window, RED_SHIP);
-
+    texID[3] = loadTexture(renderer, window, RED_BULLET);
 
     return texID;
 }
@@ -114,6 +114,8 @@ void drawBullet(Entity *bullet, SDL_Renderer *renderer, SDL_Texture **textures)
 	}
 }
 
+/* ------------------------------------------------ */
+
 void drawEnemy(Entity *enemy, SDL_Renderer *renderer, SDL_Texture **textures)
 {
     while(enemy != NULL)
@@ -130,26 +132,26 @@ void drawEnemy(Entity *enemy, SDL_Renderer *renderer, SDL_Texture **textures)
     }
 }
 
-int bulletHitFighter(Entity *bullet, Entity *enemy)
-{    
-    for(Entity *e = enemy; e != NULL; e = e->next)
-    {
-        for(Entity *b = bullet; b != NULL; b = b->next)
-        {
-            if(e->side != b->side && collision(b->x, b->y, b->w, b->h, e->x, e->y, e->w, e->h))
-            {
-                b->health = 0;
-                e->health = 0;
+void drawAlienBullet(Entity *bullet, SDL_Renderer *renderer, SDL_Texture **textures)
+{   
+    
+    while(bullet != NULL)
+	{
+		if(bullet->health > 0)
+		{
+			bullet->x -= bullet->dx; // direction inversée
+			bullet->y -= bullet->dy; // direction inversée
 
-                return 1;
-            }
-        }
-    }
+			blit(renderer, textures[bullet->texID], &bullet->x, &bullet->y);
 
-    return 0;
+			if(bullet->x < 0) // limite bord gauche
+			{
+				bullet->health = 0;
+			}
+		}
+		
+		bullet = bullet->next;
+	}
 }
 
-int collisionDecor()
-{
-    return 0;
-}
+/* ------------------------------------------------ */

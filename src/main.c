@@ -3,20 +3,10 @@
 #include "input.h"
 #include "structs.h"
 
-static void capFrameRate(long *then, float *remainder);
+// https://www.parallelrealities.co.uk/tutorials/shooter/shooter8.php
 
-void printList(Entity *list)
-{
-	Entity *tmp = list;
-	
-	printf("==============\n");
-	while(tmp != NULL)
-	{
-		printf("%d ", tmp->health);
-		tmp = tmp->next;
-	}
-	printf("\n==============\n");
-}
+static void capFrameRate(long *then, float *remainder);
+void printList(Entity *list);
 
 int main(int argc, char *argv[])
 {	
@@ -24,12 +14,16 @@ int main(int argc, char *argv[])
 	Entity *player = NULL;
 	Entity *bullet = NULL;
 	Entity *enemy = NULL;
+	Entity *bulletAlien = NULL;
 
 	app = initSDL();
 	player = initPlayer();
 	int enemySpawnTimer = 0;
 	long then = 0;
 	float remainder = 0;
+	int prevPositionX = player->x;
+	int prevPositionY = player->y;
+	int score = 0;
 
 	SDL_Texture **textures = initTextures(app->renderer, app->window);
 	SDL_bool prog_launched = SDL_TRUE, *ptr = &prog_launched;
@@ -38,35 +32,51 @@ int main(int argc, char *argv[])
 	while (*ptr)
 	{
 		prepareScene(app);
-
 		doInput(ptr, ptr_b, &player->x, &player->y);
 
 		/* DRAW */
 
 		drawPlayer(player, app->renderer, textures);
-		/* ---- */
+
 		if(b_pressed)
 		{
 			bullet = initBullet(bullet, &player->x, &player->y);
-			b_pressed = SDL_FALSE;
 			bullet = freeDeadEntity(bullet, 0);
-			enemy = freeDeadEntity(enemy, 0);
+			b_pressed = SDL_FALSE;
 		}
 		drawBullet(bullet, app->renderer, textures);
-		/* ---- */
+
 		if(--enemySpawnTimer <= 0)
 		{
 			enemy = initEnemy(enemy);
+			enemy = freeDeadEntity(enemy, 0);
 			enemySpawnTimer = 30 + (rand() % 60);
 		}
 		drawEnemy(enemy, app->renderer, textures);
-		/* ---- */
-		bulletHitFighter(bullet, enemy);
-		/* ---- */
+
+		if(prevPositionX != player->x || prevPositionY != player->y)
+		{		
+			for(Entity *e = enemy; e != NULL; e = e->next)
+				if(e->y >= (player->y - 10) && e->y <= (player->y + 10))
+				{
+					bulletAlien = initAlienBullet(bulletAlien, &e->x, &e->y);
+					bulletAlien = freeDeadEntity(bulletAlien, 0);
+				}
+			
+			prevPositionX = player->x;
+			prevPositionY = player->y;
+		}
+		drawAlienBullet(bulletAlien, app->renderer, textures);
+
+		score = bulletHitEnnemy(bullet, enemy, score);
+		player->health = bulletHitPlayer(bulletAlien, player);
+		
 		presentScene(app->renderer);
 		capFrameRate(&then, &remainder);//SDL_Delay(16);
 	}
 
+	printf("Score : %d\n", score);
+	printf("Sante : %d\n", player->health);
 	freeTextures(textures);
 	freeEntity(player);
 	freeEntity(bullet);
@@ -99,4 +109,17 @@ static void capFrameRate(long *then, float *remainder)
 	*remainder += 0.667;
 
 	*then = SDL_GetTicks();
+}
+
+void printList(Entity *list)
+{
+	Entity *tmp = list;
+	
+	printf("> ");
+	while(tmp != NULL)
+	{
+		printf("%d.", tmp->health);
+		tmp = tmp->next;
+	}
+	printf("\n");
 }
